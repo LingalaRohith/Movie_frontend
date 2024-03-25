@@ -1,0 +1,82 @@
+.manage-movies {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+
+h5{ 
+    font-weight: 700;
+    font-size: 1.5em;
+    color: #080533;
+    margin-bottom: 10px;
+}
+
+.add-movie-form {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-movie-form input[type="text"],
+.add-movie-form input[type="email"] {
+    margin-right: 10px;
+    padding: 8px;
+    flex-grow: 1;
+}
+
+.add-movie-form button {
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.btn-add {
+    padding: 5px 20px;
+    min-width: 120px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.btn-delete {
+    padding: 5px 20px;
+    min-width: 100px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
+

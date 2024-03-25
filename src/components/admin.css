@@ -1,0 +1,25 @@
+.admin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.admin h1 {
+    color: #7F69CE;
+}
+
+.admin h2 {
+    color: black;
+}
+
+.admin button {
+    margin: 10px;
+    background-color: #080533;
+    height: 50px;
+    width: 400px;
+
+}
+
+.admin button:hover {
+    background-color: #7F69CE;
+}

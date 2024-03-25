@@ -1,0 +1,243 @@
+body, html {
+  padding: 0; 
+}
+
+.order-summary-container {
+  display: flex; 
+  justify-content: flex-end; 
+  align-items: flex-start; 
+  padding: 20px; 
+  padding-top: 100px; 
+  height: calc(100vh - 100px); 
+  box-sizing: border-box; 
+}
+
+.order-summary-card {
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc; 
+  padding: 15px;
+  width: 500px; 
+  position: fixed; 
+  right: 50px; 
+  top: 100px;
+}
+
+.order-summary-card h2 {
+  color: navy; 
+  font-size: 1.5em; 
+  border-bottom: 1px solid #ccc; 
+  padding-bottom: 10px; 
+}
+
+.order-summary-item {
+  padding-bottom: 5px; 
+  margin-bottom: 10px; 
+}
+
+.order-summary-item p {
+  margin: 0; 
+}
+
+.order-summary-item p + p {
+  align-items: flex-end; 
+  font-size: 0.99em; 
+}
+.ticket-type-row {
+  border-top: 1px solid #ccc; /* Line above the total */
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; 
+  margin-bottom: 10px;
+}
+
+.ticket-type {
+  flex-basis: 50%; 
+  
+}
+
+.ticket-info {
+  flex-basis: 50%; 
+  display: flex;
+  justify-content: space-between; 
+  
+}
+.align-right {
+  text-align: right;
+  display: block; 
+  margin-bottom: -10px;
+}
+
+.ticket-quantity {
+  font-size: 0.9em; 
+  text-align: right; 
+}
+
+.ticket-price {
+  font-weight: bold; 
+  text-align: right;
+}
+
+.total-price {
+  font-weight: bold;
+  font-size: 1.em; /* Size of the total price */
+  border-top: 1px solid #ccc; /* Line above the total */
+  padding-top: 10px; 
+  margin-top: 10px; 
+  align-items: flex-end; 
+
+}
+
+.promo-code-section {
+  display: flex;
+  justify-content: space-between; 
+  margin-top: 20px; 
+}
+
+.promo-code-section button {
+  background-color: green; 
+  border-radius: 0px; 
+
+}
+
+
+.review-order-section  {
+  flex: 1; 
+  margin-right: 20px; 
+}
+.review-order-section h1 {
+  margin-top: -60px; 
+}
+.review-order-section h2  {
+  color: black; 
+  flex: 1; 
+  margin-left:0px; 
+  margin-bottom: 20px; 
+}
+
+.review-order-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-order-section label {
+  margin-bottom: 5px;
+}
+
+.review-order-section input {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+}
+
+.order-button {
+  width: 400px; 
+  padding: 10px 0; 
+  text-align: center;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px; 
+  transition: background-color 0.3s;
+}
+
+.cancel-order-btn {
+  background-color: #e63d3d; 
+}
+
+.submit-order-btn {
+  background-color: #055e0e;
+}
+
+.order-button:hover {
+  background-color: inherit;
+}
+
+.cancel-order-btn:hover {
+  background-color: #ff6c6c;
+}
+
+.submit-order-btn:hover {
+  background-color: #3f8945;
+}
+.saved-card-display {
+    cursor: pointer;
+    background: linear-gradient(to right, #ff1e56, #ffac41);
+    color: white;
+    padding: 50px; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+    max-width: 150px;
+    max-height: 400px;
+    font-family: 'Courier New', Courier, monospace; 
+    box-shadow: 0 0 10px 2px #011d02;
+}
+
+.card-chip {
+  background-color: #666; /* Chip color */
+  border-radius: 4px; /* Rounded corners for the chip */
+  height: 30px; /* Chip height */
+  width: 40px; /* Chip width */
+  position: absolute;
+  top: 20px; 
+  left: 20px;
+  overflow: hidden; 
+}
+
+.card-chip::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    #777 2px,
+    #777 3px
+  );
+}
+.card-logo {
+  font-size: 1.2em;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.card-number {
+  letter-spacing: 0px; 
+  font-size: 12px; 
+  margin-top: 30px; 
+  font-family: 'Lucida Console', Monaco, monospace;
+}
+
+.card-holder-name {
+  font-family: 'Arial', sans-serif;
+  font-size: 1em;
+  position: absolute;
+  bottom: 20px;
+  left: 45px;
+}
+
+
+.card-details p {
+  margin: 5px 0;
+}
+.card-holder-label {
+  font-size: 0.8em;
+  color: #ccc; 
+  margin-right: 5px;
+}
+
+
+
+
+

@@ -1,0 +1,77 @@
+.profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.profile-info p {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 20px;
+}
+
+.profile-container h2 {
+    text-align: center;
+    color: #5c6bc0;
+    font-size: 35px;
+}
+
+.profile-container button {
+    padding: 10px 20px;
+    background-color: #5c6bc0;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 20px auto;
+}
+
+.profile-container button:hover {
+    background-color: #3f51b5;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color:rgb(247, 215, 220);
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 1px;
+    display: flex;
+}
+
+.card button {
+    background-color: white;
+    color: black;
+    height: 40px;
+    border: 1px solid #3f51b5;
+}
+
+.style {
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color:rgb(247, 215, 220);
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 1px;
+    display: flex;
+}
+
+.style button {
+    background-color: white;
+    color: black;
+    height: 40px;
+    border: 1px solid #3f51b5;
+}
+
+.style button:hover {
+    color: white;
+}
+

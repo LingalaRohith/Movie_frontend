@@ -1,0 +1,86 @@
+body {
+  background-color: rgb(255, 255, 255) !important;
+
+}
+.signup-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 50px;
+    text-align: center;
+  }
+
+  .signup-container h3{ 
+    color: navy;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
+
+  }
+  
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"] {
+    width: 80%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    font-size: 16px;
+  }
+  
+  input::placeholder {
+    color: #979393;
+  }
+  
+  .optional-actions {
+    margin: 10px 0;
+  }
+  
+  .optional-button {
+    padding: 10px 10px;
+    margin: 10px;
+    background-color: #ffffff;
+    color: #7F69CE;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 15px;
+    border: 1px solid #7F69CE; 
+    border-radius: 5px; 
+  }
+
+  .submit-button {
+    font-size: 20px;
+    background-color: green;
+    padding: 15px 15px;
+    margin: 10x;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 200px;
+    border: none;
+    border-radius: 5px; 
+
+  }
+  
+  .optional-button:hover,
+  .submit-button:hover {
+    background-color: #0aa23a;
+  }
+  
+  h3 {
+    color: #7F69CE;
+    margin-bottom: 30px;
+    margin-top: 0px;
+    font-size: 40px;
+  }
+
+  .lin {
+    padding-top: 20px;
+    font-size: 20px;
+  }
+  

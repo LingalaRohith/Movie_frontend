@@ -1,0 +1,116 @@
+.order-confirmation-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 2em;
+  background: #ffffff; 
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.confirmation-header {
+  color: #4CAF50; 
+  margin-bottom: 1em;
+}
+
+.confirmation-details {
+  border-top: 2px solid #eee;
+  padding-top: 1em;
+}
+
+.confirmation-item {
+  margin: 0.5em 0;
+}
+
+.confirmation-item strong {
+  display: block;
+}
+
+.movie-poster {
+  width: 50%; 
+  margin: 1em auto;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.total-price {
+  font-size: 1.5em;
+  color: #000; 
+  margin-top: 1em;
+}
+
+.confirmation-footer {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 2em;
+}
+
+/*FOR THE CHECK MARK*/
+
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 50px;
+    opacity: 1;
+  }
+  40% {
+    height: 50px;
+    width: 50px;
+    opacity: 1;
+  }
+  100% {
+    height: 50px;
+    width: 50px;
+    opacity: 1;
+  }
+}
+
+
+@keyframes checkmark-check {
+  0% {
+    stroke-dashoffset: 50px;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.checkmark-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 50px; 
+  height: 50px; 
+  margin-bottom: 1em;
+  border-radius: 50%;
+  background-color: #0b520d; 
+}
+
+.checkmark-svg {
+  width: 100%; 
+  height: 100%; 
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+.checkmark-svg path {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: checkmark-check .5s ease-in-out .4s forwards;
+}
+
+
+.checkmark-svg circle {
+  stroke-dasharray: 186;
+  stroke-dashoffset: 186;
+  animation: checkmark-circle .6s cubic-bezier(.65, .05, .36, 1) forwards;
+}
+

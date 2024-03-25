@@ -1,0 +1,87 @@
+.manage-promotions {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+h5 { 
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.75em;
+    color: #080533;
+    margin-bottom: 10px;
+}
+
+.promotion-item {
+    background-color: #ffffff; 
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 8px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+ 
+.promotion-details h3 {
+    flex-grow: 1;
+    font-size: 1.5em;
+    color: #050546; 
+
+}
+.promotion-details p {
+    color: #0a0a9c; 
+    font-size: 16px; 
+}
+
+.promotion-details p.code, .promotion-details p.discount {
+    color: #008000; 
+    font-size: 14px; 
+}
+
+.add-promotion-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f2eded; 
+    border-radius: 5px;
+    font-size: 1.6em;
+}
+
+.add-promotion-form h3 {
+    flex-grow: 1; 
+    font-size: 1em;
+    color: #050546; 
+
+}
+
+.add-promotion-form input,
+.add-promotion-form textarea {
+    width: calc(100% - 20px); 
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #000000;
+    flex-grow: 1; 
+}
+
+.add-promotion-form button.btn-add {
+    padding: 5px 20px;
+    min-width: 120px; 
+    background-color: green; 
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-delete {
+    padding: 5px 20px;
+    min-width: 100px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+

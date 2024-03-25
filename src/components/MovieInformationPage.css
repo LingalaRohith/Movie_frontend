@@ -1,0 +1,104 @@
+.modal-content {
+  background-color: #ffffff; 
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 8px;
+  margin: auto;
+  width: 90%;
+  max-width: 800px;
+}
+
+.modal-content h2 {
+  color: black;
+  text-align: center;
+  font-size: 35px;
+  padding-bottom: 10px; 
+}
+.video-and-synopsis {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.video iframe {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+
+.synopsis {
+  width: calc(50% - 10px);
+  text-align: right;
+}
+
+.synopsis p {
+  font-size: 17px;
+}
+
+.counters {
+  display: flex;
+  justify-content:center;
+  margin-top: 20px;
+}
+
+.counter-item {
+  text-align: center;
+}
+
+.counter-item button {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-radius: 5px;
+  color: #081752;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.counter-item span {
+  margin: 0 10px;
+}
+
+.dates-times-tickets select, .dates-times-tickets button {
+  padding: 5px 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid #fff;
+  background-color: #398c3c;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+
+.movie-details {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #4a90e2;
+  border-radius: 8px;
+}
+
+.movie-details p {
+  color: white;
+  font-size: 17px;
+  font-weight:normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .video-and-synopsis {
+    flex-direction: column;
+  }
+
+  .synopsis, .video {
+    width: 100%;
+  }
+
+  .counters {
+    flex-direction: column;
+  }
+
+  .counter-item {
+    margin-bottom: 20px;
+  }
+}

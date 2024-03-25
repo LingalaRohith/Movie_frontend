@@ -1,0 +1,20 @@
+.seat {
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  border: 1px solid #666;
+  cursor: pointer;
+}
+
+.seat.taken {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.seat.selected {
+  background-color: red;
+}
+
+.seat.available {
+  background-color: white;
+}
