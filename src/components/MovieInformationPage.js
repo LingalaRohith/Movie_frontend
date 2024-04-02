@@ -3,15 +3,57 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import './MovieInformationPage.css';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 function MovieInformationPage({isLoggedIn}) {
   const navigate = useNavigate();
   const [showShowDates, setShowShowDates] = useState('');
   const [showShowTimes, setShowShowTimes] = useState('');
+  const [dates,setDates] = useState([]);
+  const [times, setTimes] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [seniors, setSeniors] = useState(0);
+
+
+  useEffect(() => {
+    async function fetchDates() {
+      try {
+        const response = await axios.post('http://localhost:8080/getShowDate',{"movieId" : movie.id});
+        console.log(response);
+        setDates(response.data['400']);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    }
+    fetchDates();
+  }, []);
+
+  const fetchTimesByDate = async (date) => {
+    try {
+      const response = await axios.post('http://localhost:8080/getShowsByDate', {
+        "movieId" : movie.id,
+        "showDate": date
+    });
+    console.log(response);
+      setTimes(response.data); // Assuming response.data is an array of times
+    } catch (error) {
+      console.error('Error fetching times:', error);
+    }
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const reducedDate = new Date(selectedDate);
+    reducedDate.setDate(reducedDate.getDate() + 1);
+    setSelectedDate(reducedDate);
+    // setSelectedDate(selectedDate);
+    fetchTimesByDate(reducedDate);
+  };
 
   const increment = (type) => {
     if (type === 'adults') {
@@ -90,10 +132,13 @@ function MovieInformationPage({isLoggedIn}) {
               <span>{adults}</span>
               <button className="increment" onClick ={() => increment('adults')}>+</button>
               <div className="dates-times-tickets">
-              <select value={showShowDates} onChange={(e) => setShowShowDates(e.target.value)}>
+              <select value={showShowDates} onChange={handleDateChange}>
               {showShowDates === '' && <option disabled hidden value="">Dates</option>}
-              <option value="dayOne">{movie?.dayOne}</option>
-              <option value="dayTwo">{movie?.dayTwo}</option>
+              {/* <option value="dayOne">{movie?.dayOne}</option>
+              <option value="dayTwo">{movie?.dayTwo}</option> */}
+              {dates.map((date, index) => (
+              <option key={index} value={date}>{date}</option>
+            ))}
             </select>
             </div>
   
