@@ -1,27 +1,81 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import './ManagePromotions.css';
+// import { useEffect } from 'react';
+import axios from 'axios';
 
 function ManagePromotions({isLoggedIn}) {
     const [promotions, setPromotions] = useState([
         // some dummy data
-        { id: 1, name: 'Early Bird', description: 'Get 20% off for early bookings', code: 'EARLY20', amount: 0.80 },
-        { id: 2, name: 'Summer Sale', description: 'Enjoy the summer with a 15% discount', code: 'SUMMER15', amount: 0.85 },
+        // { id: 1, name: 'Early Bird', description: 'Get 20% off for early bookings', code: 'EARLY20', amount: 0.80 },
+        // { id: 2, name: 'Summer Sale', description: 'Enjoy the summer with a 15% discount', code: 'SUMMER15', amount: 0.85 },
+        {
+        "promoId": '',
+        "promoCode": '',
+        "promoDescription": '',
+        "startDate": '',
+        "endDate": '',
+        "discountApplied": 0
+        }
     ]);
 
-    const [newPromotion, setNewPromotion] = useState({ name: '', description: '', code: '', amount: '' });
+    useEffect (() => {
+        async function fetchPromos() {
+          try {
+            const response = await axios.get('http://localhost:8080/getAllPromos');
+            console.log(response);
+            setPromotions(response.data);
+          } catch (error) {
+            console.error('Error fetching movies:', error);
+          }
+        }
+        fetchPromos();
+      }, []);
 
-    const addPromotion = () => {
+    const [newPromotion, setNewPromotion] = useState({ "promoId": '',
+    "promoCode": '',
+    "promoDescription": '',
+    "startDate": '',
+    "endDate": '',
+    "discountApplied": 0 });
+
+    const addPromotion = async() => {
         if (!newPromotion.name || !newPromotion.code || !newPromotion.amount) {
             alert('Please fill in all fields.');
             return;
         }
         setPromotions([...promotions, { ...newPromotion, id: promotions.length + 1 }]);
-        setNewPromotion({ name: '', description: '', code: '', amount: '' }); // Reset form
+        setNewPromotion({ name: '', description: '', code: '', amount: '' });
+         // Reset form
+         try {
+            const response = await axios.post('http://localhost:8080/addPromo',{
+                newPromotion    //need to populate the data from console
+            });
+            console.log(response);
+            if(response)
+                alert("addes successfully");
+            else
+                alert("something went wrong");
+          } catch (error) {
+            console.error('Error fetching movies:', error);
+          }
+
     };
 
-    const deletePromotion = (id) => {
-        setPromotions(promotions.filter(promotion => promotion.id !== id));
+    const deletePromotion = async (id) => {
+        setPromotions(promotions.filter(promotion => promotion.promoId !== id));
+        try {
+            const response = await axios.post('http://localhost:8080/deletePromo',{
+                "promoId": id
+            });
+            console.log(response);
+            if(response)
+                alert("deleted successfully");
+            else
+                alert("something went wrong");
+          } catch (error) {
+            console.error('Error fetching movies:', error);
+          }
     };
 
     const handleInputChange = (e) => {
@@ -35,14 +89,14 @@ function ManagePromotions({isLoggedIn}) {
             <h5>Manage Promotions</h5>
             <div className="promotion-list">
                 {promotions.map((promotion) => (
-                    <div key={promotion.id} className="promotion-item">
+                    <div key={promotion.promoId} className="promotion-item">
                         <div className="promotion-details">
                             <h3>{promotion.name}</h3>
-                            <p>{promotion.description}</p>
-                            <p>Code: {promotion.code}</p>
-                            <p>Discount: {promotion.amount * 100}%</p>
+                            <p>{promotion.promoDescription}</p>
+                            <p>Code: {promotion.promoCode}</p>
+                            <p>Discount: {promotion.discountApplied * 100}%</p>
                         </div>
-                        <button onClick={() => deletePromotion(promotion.id)} className="btn-delete">Delete</button>
+                        <button onClick={() => deletePromotion(promotion.promoId)} className="btn-delete">Delete</button>
                     </div>
                 ))}
             </div>

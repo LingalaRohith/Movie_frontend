@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import './ManageMovies.css';
+import axios from 'axios';
 
 function ManageMovies() {
-    const initialMovies = [
-        { id: 1, name: 'Bob Marley: One Love', img: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/06/Bob_Marley_One_Love.jpg/220px-Bob_Marley_One_Love.jpg', showtimes: [] },
-        { id: 2, name: 'Madame Web', img: 'https://shorturl.at/ruvL2', showtimes: [] },
-        { id: 3, name: 'Dune: Part Two', img: 'https://shorturl.at/BGVX2', showtimes: [] },
-        { id: 4, name: 'Kung Fu Panda 4', img: 'https://shorturl.at/fyP09', showtimes: [] },
-    ];
+    // const initialMovies = [
+    //     { id: 1, name: 'Bob Marley: One Love', img: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/06/Bob_Marley_One_Love.jpg/220px-Bob_Marley_One_Love.jpg', showtimes: [] },
+    //     { id: 2, name: 'Madame Web', img: 'https://shorturl.at/ruvL2', showtimes: [] },
+    //     { id: 3, name: 'Dune: Part Two', img: 'https://shorturl.at/BGVX2', showtimes: [] },
+    //     { id: 4, name: 'Kung Fu Panda 4', img: 'https://shorturl.at/fyP09', showtimes: [] },
+    // ];
 
-    const [movies, setMovies] = useState(initialMovies);
+    const [movies, setMovies] = useState([]);
     const [newMovieName, setNewMovieName] = useState('');
     const [newMovieImg, setNewMovieImg] = useState('');
     const [editingMovieId, setEditingMovieId] = useState(null);
     const [newShowtime, setNewShowtime] = useState('');
+
+    useEffect (() => {
+        async function fetchMovies() {
+          try {
+            const response = await axios.get('http://localhost:8080/api/v1/movie/getallmovies');
+            console.log(response);
+            setMovies(response.data);
+          } catch (error) {
+            console.error('Error fetching movies:', error);
+          }
+        }
+        fetchMovies();
+      }, []);
 
     const addMovie = () => {
         if (!newMovieName) return; // Basic validation
@@ -96,8 +110,8 @@ function ManageMovies() {
                             {movies.map((movie) => (
                                 <td key={movie.id}>
                                     <img
-                                        src={movie.img}
-                                        alt={movie.name}
+                                        src={movie.posterSrc}
+                                        alt={movie.movieTitle}
                                         width="100px"
                                         height="200px"
                                     ></img>
