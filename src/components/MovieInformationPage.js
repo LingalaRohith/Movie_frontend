@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import './MovieInformationPage.css';
@@ -6,12 +7,17 @@ import { useNavigate } from 'react-router-dom';
 
 function MovieInformationPage({isLoggedIn}) {
   const navigate = useNavigate();
-  const [showShowDates, setShowShowDates] = useState('');
-  const [showShowTimes, setShowShowTimes] = useState('');
+  const [showDates, setShowDates] = useState([]);
+  const [showTimes, setShowTimes] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedShowTime, setSelectedShowTime] = useState('');
+
 
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [seniors, setSeniors] = useState(0);
+  const location = useLocation();
+  const { movie } = location.state || {};
 
   const increment = (type) => {
     if (type === 'adults') {
@@ -39,32 +45,91 @@ function MovieInformationPage({isLoggedIn}) {
     }
   };
 
+  const handleDateChange = (e) => {
+    const newSelectedDate = e.target.value;
+    setSelectedDate(newSelectedDate);
+};
 
-  
+const renderTimesButton = () => {
+  if (selectedDate) {
+      return <button>Select Time</button>;
+  }
+  return null;
+};
+
+
+useEffect(() => {
+  const fetchShowDates = async () => {
+      try {
+          const response = await axios.post('http://localhost:8080/getShowDate',{"movieId" : movie.id});
+          const dates = response.data['400'];
+          if (Array.isArray(dates)) {
+              setShowDates(dates);
+          } else {
+              console.error('Expected an array for show dates, received:', dates);
+          }
+      } catch (error) {
+          console.error('Error fetching show dates:', error);
+      }
+    };
+    if (movie?.id) {
+        fetchShowDates();
+    }
+}, [movie?.id]);
+
+useEffect(() => {
+  const fetchShowTimes = async () => {
+    if (!selectedDate) return; 
+    try {
+      const response = await axios.post('http://localhost:8080/getShowsByDate', {
+        movieId: movie.id,
+        showDate: selectedDate
+      });
+      const times = response.data['400']; 
+      if (Array.isArray(times)) {
+        setShowTimes(times);
+        console.log(showTimes);
+      } else {
+        console.error('Expected an array for show times, received:', times);
+      }
+    } catch (error) {
+      console.error('Error fetching show times:', error);
+    }
+  };
+
+  fetchShowTimes();
+}, [selectedDate, movie?.id]);
+
+
   const handleNavigation = () => {
-    const selectedDate = showShowDates === 'dayOne' ? {Today} : {Tomorrow};
-    // movie.dayOne : movie.dayTwo;
-    // const selectedTime = showShowTimes.startsWith('dayOneTime') ? movie[showShowTimes] : movie[showShowTimes];
-    const selectedTime = showShowTimes === 'dayOneTime' ? "5:30 PM" : "9:15 PM";
-
     navigate('/bookseats', {
       state: {
         movie,
         ticketQuantities: {
-          adults: adults,
-          children: children,
-          seniors: seniors
-        }, 
-        showShowDates: "Today",//selectedDate, // Pass the actual selected date here
-        showShowTimes: "5:30 PM"
+          adults,
+          children,
+          seniors
+        },
+        showDate: selectedDate, 
+        showTime: showTimes 
       }
     });
   };
 
-  const location = useLocation();
-  const { movie } = location.state || {};
-
-
+  const renderShowTimesDropdown = () => {
+    if (selectedDate && showTimes.length > 0) {
+      return (
+        <select value={selectedShowTime} onChange={(e) => setSelectedShowTime(e.target.value)}>
+          <option value="" disabled>Select Time</option>
+          {showTimes.map((time, index) => (
+            <option key={index} value={time}>{time}</option>
+          ))}
+        </select>
+      );
+    }
+    return null;
+  };
+  
   return (
     <div className="App">
       <Header isLoggedIn={isLoggedIn}/>
@@ -83,20 +148,24 @@ function MovieInformationPage({isLoggedIn}) {
           </div>
           <div className="synopsis">
             <p>{movie?.synopsis}</p>
+
             <div className="counters">
             <div className="counter-item">
               <p>Adult:</p>
               <button onClick={() => decrement('adults')}>-</button>
               <span>{adults}</span>
               <button className="increment" onClick ={() => increment('adults')}>+</button>
+
+              {(adults > 0 || children > 0 || seniors > 0) && (
               <div className="dates-times-tickets">
-              <select value={showShowDates} onChange={(e) => setShowShowDates(e.target.value)}>
-              {showShowDates === '' && <option disabled hidden value="">Dates</option>}
-              <option value="dayOne">{movie?.dayOne}</option>
-              <option value="dayTwo">{movie?.dayTwo}</option>
-            </select>
-            </div>
-  
+                <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
+                <option value="" disabled>Select Date</option>
+                {showDates.map((date, index) => (
+                  <option key={index} value={date}>{new Date(date).toLocaleDateString()}</option>
+                ))}
+                 </select>
+        </div>
+      )}
             </div>
             <div className="counter-item">
               <p>Child:</p>
@@ -104,35 +173,8 @@ function MovieInformationPage({isLoggedIn}) {
               <span>{children}</span>
               <button onClick={() => increment('children')}>+</button>
               <div className="dates-times-tickets">
-            
-            {showShowDates !== '' && showShowDates === 'dayOne' && (
-              <select value={showShowTimes} onChange={(e) => setShowShowTimes(e.target.value)}>
-                {showShowTimes === '' && <option disabled hidden value="">Times</option>}
-                {[1, 2, 3].map((index) => {
-                  const time = movie[`dayOneTime${index}`];
-                  return time && (
-                    <option key={index} value={`dayOneTime${index}`}>
-                      {time}
-                    </option>
-                  );
-                })}
-              </select>
-            )}
-  
-            {showShowDates !== '' && showShowDates === 'dayTwo' && (
-              <select value={showShowTimes} onChange={(e) => setShowShowTimes(e.target.value)}>
-                {showShowTimes === '' && <option disabled hidden value="">Times</option>}
-                {[1, 2, 3].map((index) => {
-                  const time = movie[`dayTwoTime${index}`];
-                  return time && (
-                    <option key={index} value={`dayTwoTime${index}`}>
-                      {time}
-                    </option>
-                  );
-                })}
-              </select>
-            )}
-  
+              {renderShowTimesDropdown()}
+
           </div>
             </div>
             <div className="counter-item">
@@ -140,11 +182,13 @@ function MovieInformationPage({isLoggedIn}) {
               <button onClick={() => decrement('seniors')}>-</button>
               <span>{seniors}</span>
               <button onClick={() => increment('seniors')}>+</button>
-              {showShowDates !== '' && showShowTimes !== '' && (
-              <div className="dates-times-tickets">
-                <button onClick={handleNavigation}>Book Seats</button>
-              </div>
+
+              {selectedShowTime && (
+                <div className="dates-times-tickets">
+                  <button onClick={handleNavigation}>Book Seats</button>
+                </div>
               )}
+
             </div>
           </div>
             
@@ -166,4 +210,3 @@ function MovieInformationPage({isLoggedIn}) {
 }
 
 export default MovieInformationPage;
-
