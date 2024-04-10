@@ -4,8 +4,6 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import './MovieInformationPage.css';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import axios from 'axios';
 
 function MovieInformationPage({isLoggedIn}) {
   const navigate = useNavigate();
@@ -20,7 +18,6 @@ function MovieInformationPage({isLoggedIn}) {
   const [seniors, setSeniors] = useState(0);
   const location = useLocation();
   const { movie } = location.state || {};
-
 
   const increment = (type) => {
     if (type === 'adults') {
