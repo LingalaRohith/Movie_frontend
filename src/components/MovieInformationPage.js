@@ -65,6 +65,8 @@ useEffect(() => {
           const dates = response.data['400'];
           if (Array.isArray(dates)) {
               setShowDates(dates);
+              console.log("dates: " + dates);
+              console.log("showdates: " + showDates);
           } else {
               console.error('Expected an array for show dates, received:', dates);
           }
@@ -161,7 +163,7 @@ useEffect(() => {
                 <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
                 <option value="" disabled>Select Date</option>
                 {showDates.map((date, index) => (
-                  <option key={index} value={date}>{new Date(date).toLocaleDateString()}</option>
+                  <option key={index} value={date}>{new Date(date + "T00:00:00").toLocaleDateString()}</option>
                 ))}
                  </select>
         </div>
