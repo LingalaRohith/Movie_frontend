@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import './OrderSummary.css'; 
@@ -9,8 +9,8 @@ const OrderSummary = ({ isLoggedIn }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { movie, selectedSeats, ticketQuantities, showShowDates, showShowTimes } = location.state || {
-    movie: {}, selectedSeats: [], ticketQuantities: {}, showShowDates: '', showShowTimes: ''
+  const { movie, selectedSeats, ticketQuantities, showDates, showTimes, selectedShowTime, selectedDate } = location.state || {
+    movie: {}, selectedSeats: [], ticketQuantities: {}, showDates: '', showTimes: ''
   };
   const [localTicketQuantities, setLocalTicketQuantities] = useState(ticketQuantities);
   const [localSelectedSeats, setLocalSelectedSeats] = useState(selectedSeats);
@@ -40,6 +40,11 @@ const OrderSummary = ({ isLoggedIn }) => {
     });
   };
 
+  useEffect(() => {
+    console.log(showDates); 
+    console.log(showTimes);
+  }, [movie]);
+
   const adjustSeatsForTicketChange = (newTicketQuantities) => {
     const newTotalTickets = Object.values(newTicketQuantities).reduce((acc, curr) => acc + curr, 0);
     let updatedSelectedSeats = [...localSelectedSeats];
@@ -50,8 +55,8 @@ const OrderSummary = ({ isLoggedIn }) => {
           movie,
           existingSelections: updatedSelectedSeats,
           ticketQuantities: newTicketQuantities,
-          showShowDates,
-          showShowTimes,
+          showDates,
+          showTimes,
           additionalSeatsNeeded: newTotalTickets - updatedSelectedSeats.length
         }
       });
@@ -83,8 +88,8 @@ const OrderSummary = ({ isLoggedIn }) => {
           subtotal, 
           tax, 
           total, 
-          showShowDates, 
-          showShowTimes 
+          showDates, 
+          showTimes 
         }
       });
     }
@@ -97,9 +102,9 @@ const OrderSummary = ({ isLoggedIn }) => {
       <div class="main-container">
         <h2 className="order-summary-title">Order Summary</h2>
         <div className="order-summary-details">
-          <div className="detail-line">Movie: {movie.title}</div>
-          <div className="detail-line">Show Date: {showShowDates}</div>
-          <div className="detail-line">Show Time: {showShowTimes}</div>
+          <div className="detail-line">Movie: {movie.movieTitle}</div>
+          <div className="detail-line">Show Date: {showDates}</div>
+          <div className="detail-line">Show Time: {showTimes}:00</div>
           <div className="detail-line">Selected Seats: {localSelectedSeats.join(', ')}</div>
           <div className="tickets-container">
             {Object.entries(localTicketQuantities).map(([type, quantity]) => (
@@ -121,7 +126,7 @@ const OrderSummary = ({ isLoggedIn }) => {
           </div> 
           <div className="button-container">
           <button className="order-summary-button back-button" onClick={handleBack}>
-            <FontAwesomeIcon icon={faArrowLeft} /> {/* FontAwesome arrow icon */}
+            <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button className="order-summary-button confirm-continue-button" onClick={navigateToCheckout}>Confirm and Continue</button>
           </div>

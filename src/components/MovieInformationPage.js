@@ -65,8 +65,6 @@ useEffect(() => {
           const dates = response.data['400'];
           if (Array.isArray(dates)) {
               setShowDates(dates);
-              console.log("dates: " + dates);
-              console.log("showdates: " + showDates);
           } else {
               console.error('Expected an array for show dates, received:', dates);
           }
@@ -90,7 +88,6 @@ useEffect(() => {
       const times = response.data['400']; 
       if (Array.isArray(times)) {
         setShowTimes(times);
-        console.log(showTimes);
       } else {
         console.error('Expected an array for show times, received:', times);
       }
@@ -104,6 +101,7 @@ useEffect(() => {
 
 
   const handleNavigation = () => {
+    console.log(movie);
     navigate('/bookseats', {
       state: {
         movie,
@@ -112,8 +110,8 @@ useEffect(() => {
           children,
           seniors
         },
-        showDate: selectedDate, 
-        showTime: showTimes 
+        showDates: selectedDate, 
+        showTimes: selectedShowTime 
       }
     });
   };

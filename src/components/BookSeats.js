@@ -9,7 +9,7 @@ function BookSeats({ isLoggedIn }) {
   const [takenSeats, setTakenSeats] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const { movie, ticketQuantities, showShowDates, showShowTimes, existingSelections } = location.state || {};
+  const { movie, ticketQuantities, showDates, showTimes, existingSelections, selectedShowTime, selectedDate } = location.state || {};
   // Calculate the total tickets needed from the ticketQuantities passed in state
   const totalTicketsRequired = ticketQuantities ? Object.values(ticketQuantities).reduce((acc, value) => acc + value, 0) : 0;
 
@@ -30,6 +30,11 @@ function BookSeats({ isLoggedIn }) {
     }
   }, [existingSelections]); // Reacting to existingSelections ensures we reset selectedSeats if coming back to add more
 
+  useEffect(() => {
+    console.log(showDates); 
+    console.log(showTimes);
+  }, [movie]);
+
   const navigateToOrderSummary = () => {
     if (selectedSeats.length < totalTicketsRequired) {
       alert(`Please select ${totalTicketsRequired} seats before continuing.`);
@@ -40,8 +45,8 @@ function BookSeats({ isLoggedIn }) {
         movie, 
         selectedSeats, 
         ticketQuantities, 
-        showShowDates,
-        showShowTimes,
+        showDates,
+        showTimes 
       } 
     });
   };
@@ -94,11 +99,11 @@ function BookSeats({ isLoggedIn }) {
         {movie && (
           <>
             <div className="movie-info">
-              <img src={movie.img} alt={`Poster for ${movie.title}`} className="movie-poster" />
+              <img src={movie.posterSrc} alt={`Poster for ${movie.title}`} className="movie-poster" />
               <hr className="divider" />
-              <h2 className="movie-title">{movie.title}</h2>
-              <p className="show-dates"> {showShowDates}</p>
-              <p className="show-times"> {location.state.showShowTimes}</p>
+              <h2 className="movie-title">{movie.movieTitle}</h2>
+              <p className="show-dates"> {showDates}</p>
+              <p className="show-times"> {location.state.showTimes}:00</p>
             </div>
             <header className="booking-header">
               <h1>Select Your Seats</h1>
@@ -112,7 +117,6 @@ function BookSeats({ isLoggedIn }) {
             {selectedSeats.length > 0 && <p>Selected: {selectedSeats.join(', ')}</p>}
             <button className="next-button" 
             onClick={navigateToOrderSummary} 
-            //   disabled={selectedSeats.length === 0} 
             > Next</button></>
         )}
       </div>
