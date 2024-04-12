@@ -124,7 +124,7 @@ useEffect(() => {
         <select value={selectedShowTime} onChange={(e) => setSelectedShowTime(e.target.value)}>
           <option value="" disabled>Select Time</option>
           {showTimes.map((time, index) => (
-            <option key={index} value={time}>{time}</option>
+            <option key={index} value={time}>{time}:00</option>
           ))}
         </select>
       );
