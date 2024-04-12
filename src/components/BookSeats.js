@@ -3,8 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Seat from './Seat';
 import Header from './Header';
 import './BookSeats.css';
-
+import axios from 'axios';
 function BookSeats({ isLoggedIn }) {
+  const [showId, setShowId] = useState(null);
+  const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [takenSeats, setTakenSeats] = useState([]);
   const location = useLocation();
@@ -12,6 +14,54 @@ function BookSeats({ isLoggedIn }) {
   const { movie, ticketQuantities, showDates, showTimes, existingSelections, selectedShowTime, selectedDate } = location.state || {};
   // Calculate the total tickets needed from the ticketQuantities passed in state
   const totalTicketsRequired = ticketQuantities ? Object.values(ticketQuantities).reduce((acc, value) => acc + value, 0) : 0;
+
+  useEffect(() => {
+     const fetchShowID = async () => {
+     try {
+     const response = await axios.post('http://localhost:8080/getShow',{
+     "showDate": location.state?.showDates,//"2023-09-27",
+     "showTime": parseInt(location.state?.showTimes, 10)//19
+    });
+     const show = response.data['400'];
+     // if (Array.isArray(dates)) {
+     localStorage.setItem("showId",show.showId);
+     setShowId(show.showId);
+     // showId = show.showId;
+     console.log(showId);
+     // } else {
+     //     console.error('Expected an array for show dates, received:', dates);
+     // }
+     } catch (error) {
+     console.error('Error fetching show ID:', error);
+     }
+     };
+     // if (movie?.id) {
+     fetchShowID();
+     // }
+     }, []);
+   
+     useEffect(() => {
+     const fetchSeats = async () => {
+     try {
+     const response = await axios.post('http://localhost:8080/getReservedSeats',{
+     "showID" : localStorage.getItem("showId") //1
+     });
+     const seat = response.data['400'];
+     // if (Array.isArray(dates)) {
+     setSeats(seat);
+     console.log(seats);
+    // } else {
+    //     console.error('Expected an array for show dates, received:', dates);
+     // }
+    } catch (error) {
+     console.error('Error fetching seats:', error);
+     }
+     };
+     if (localStorage.getItem("showId")) {
+      // if (showId) {
+     fetchSeats();   
+    }
+ }, []);
 
   useEffect(() => {
     // Initialize taken seats and optionally pre-populate selected seats if coming from OrderSummary
