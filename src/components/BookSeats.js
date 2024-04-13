@@ -16,93 +16,64 @@ function BookSeats({ isLoggedIn }) {
   const totalTicketsRequired = ticketQuantities ? Object.values(ticketQuantities).reduce((acc, value) => acc + value, 0) : 0;
 
   useEffect(() => {
-     const fetchShowID = async () => {
-     try {
-     const response = await axios.post('http://localhost:8080/getShow',{
-     "showDate": location.state?.showDates,//"2023-09-27",
-     "showTime": parseInt(location.state?.showTimes, 10)//19
-    });
-     const show = response.data['400'];
-     // if (Array.isArray(dates)) {
-     localStorage.setItem("showId",show.showId);
-     setShowId(show.showId);
-     // showId = show.showId;
-     console.log(showId);
-     // } else {
-     //     console.error('Expected an array for show dates, received:', dates);
-     // }
-     } catch (error) {
-     console.error('Error fetching show ID:', error);
-     }
-     };
-     // if (movie?.id) {
-     fetchShowID();
-     // }
-     }, []);
+    const fetchShowID = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/getShow', {
+          "showDate": location.state?.showDates,
+          "showTime": parseInt(location.state?.showTimes, 10)
+        });
+        const show = response.data['400'];
+        setShowId(show.showId);
+      } catch (error) {
+        console.error('Error fetching show ID:', error);
+      }
+    };
+    fetchShowID();
+  }, []);
+  
+  useEffect(() => {
+    console.log('Updated showId:', showId);
+  }, [showId]); 
+  
    
-     useEffect(() => {
-     const fetchSeats = async () => {
-     try {
-     const response = await axios.post('http://localhost:8080/getReservedSeats',{
-     "showID" : localStorage.getItem("showId") //1
-     });
-     const seat = response.data['400'];
-     // if (Array.isArray(dates)) {
-     setSeats(seat);
-     console.log(seats);
-    // } else {
-    //     console.error('Expected an array for show dates, received:', dates);
-     // }
-    } catch (error) {
-     console.error('Error fetching seats:', error);
-     }
-     };
-     if (localStorage.getItem("showId")) {
-      // if (showId) {
-     fetchSeats();   
-    }
- }, []);
-
   useEffect(() => {
-    // Initialize taken seats and optionally pre-populate selected seats if coming from OrderSummary
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    const seatsPerRow = 10;
-    const newTakenSeats = rows.flatMap(row =>
-      Array.from({ length: seatsPerRow }, (_, i) =>
-        Math.random() < 0.3 ? `${row}${i + 1}` : null
-      ).filter(Boolean)
-    );
-
-    setTakenSeats(newTakenSeats);
-
-    if (existingSelections) {
-      setSelectedSeats(existingSelections);
-    }
-  }, [existingSelections]); // Reacting to existingSelections ensures we reset selectedSeats if coming back to add more
-
-  useEffect(() => {
-    console.log(showDates); 
-    console.log(showTimes);
-  }, [movie]);
-
+    const fetchSeats = async () => {
+      if (showId) { 
+        try {
+          console.log('Fetching seats for showId:', showId);
+          const response = await axios.post('http://localhost:8080/getReservedSeats', {"showID": showId});
+          const reservedSeats = response.data['400'];
+          setTakenSeats(reservedSeats); 
+          console.log('Fetched reserved seats:', reservedSeats);
+        } catch (error) {
+          console.error('Error fetching seats:', error);
+        }
+      }
+    };
+  
+    fetchSeats();
+  }, [showId]);  
+  
+    
   const navigateToOrderSummary = () => {
     if (selectedSeats.length < totalTicketsRequired) {
-      alert(`Please select ${totalTicketsRequired} seats before continuing.`);
-      return;
+        alert(`Please select ${totalTicketsRequired} seats before continuing.`);
+        return;
     }
     navigate('/ordersummary', { 
-      state: { 
-        movie, 
-        selectedSeats, 
-        ticketQuantities, 
-        showDates,
-        showTimes 
-      } 
+        state: { 
+            movie, 
+            selectedSeats, 
+            ticketQuantities, 
+            showDates,
+            showTimes,
+            totalTicketsRequired 
+        } 
     });
-  };
+};
 
-  const handleSeatClick = (seatId) => {
-    // Existing seat click logic to select/deselect seats
+
+const handleSeatClick = (seatId) => {
     if (!takenSeats.includes(seatId)) {
       setSelectedSeats((prevSelectedSeats) => {
         if (prevSelectedSeats.includes(seatId)) {
@@ -118,7 +89,8 @@ function BookSeats({ isLoggedIn }) {
   };
 
 
-  const renderSeats = () => {
+const renderSeats = () => {
+    console.log('render: ' + takenSeats); 
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; 
     const seatsPerRow = 10; 
     return rows.map((row) => (
@@ -141,6 +113,7 @@ function BookSeats({ isLoggedIn }) {
       </div>
     ));
   };
+  
   
   return (
     <div>
@@ -175,7 +148,3 @@ function BookSeats({ isLoggedIn }) {
 }
 
 export default BookSeats;
-
- 
-
-
