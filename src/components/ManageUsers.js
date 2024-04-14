@@ -3,75 +3,102 @@ import Header from './Header';
 import './ManageUsers.css';
 import axios from 'axios';
 
-function ManageUsers({isLoggedIn}) {
-    // const initialUsers = [
-    //     { id: 1, name: 'John Cena', email: 'johnc12@yahoo.com' },
-    //     { id: 2, name: 'Jane Johnson', email: 'janejohnson@hotmail.com' },
-    //     { id: 3, name: 'Emma Thompson', email: 'emmathompson@gmail.com'}, 
-    //     { id: 4, name: 'Johnny Depp', email: 'johnnypoo450@gmail.com' },
-    //     { id: 5, name: 'Rhea Kartha', email: 'rheamonkey@gmail.com' },
-    //     { id: 6, name: 'Cate Redhead', email: 'categinger@gmail.com'}, 
-    // ];
-
+function ManageUsers({ isLoggedIn }) {
     const [users, setUsers] = useState([]);
-    const [newUserName, setNewUserName] = useState('');
-    const [newUserEmail, setNewUserEmail] = useState('');
 
-    useEffect (() => {
+    useEffect(() => {
         async function fetchUsers() {
-          try {
-            const response = await axios.get('http://localhost:8080/getAllcustomers');
-            console.log(response);
-            setUsers(response.data);
-          } catch (error) {
-            console.error('Error fetching movies:', error);
-          }
+            try {
+                const response = await axios.get('http://localhost:8080/getAllcustomers');
+                const filteredUsers = response.data
+                    .filter(user => user.userRole === "Customer")
+                    .map(user => ({
+                        ...user,
+                        status: user.customerStatusID === "Active" ? 'active' : 'inactive', // Default states
+                        actionAvailable: 'Suspend',  // Default action
+                        canDelete: true, // Make delete option always available
+                        suspended: false // track suspension status
+                    }));
+                setUsers(filteredUsers);
+                localStorage.setItem('users', JSON.stringify(filteredUsers)); // store initial users in localStorage, dont think we need
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         }
         fetchUsers();
-      }, []);
+    }, []);
 
-    const addUser = () => {
-        if (!newUserName || !newUserEmail) return; // Basic validation
-        const newUser = {
-            id: users.length + 1, // Simple id assignment
-            name: newUserName,
-            email: newUserEmail,
-        };
-        setUsers([...users, newUser]);
-        setNewUserName('');
-        setNewUserEmail('');
-    };
+    const handleAction = (id, action) => {
+        const now = new Date();
+        setUsers(prevUsers => prevUsers.map(user => {
+            if (user.userID === id) {
+                if (action === 'Delete') {
+                    return null; //  removes the user from the state
+                }
 
-    const deleteUser = (id) => {
-        setUsers(users.filter(user => user.id !== id));
+                let updates = { ...user };
+
+                if (action === 'Suspend') {
+                    updates = {
+                        ...user,
+                        customerStatusID: 'Inactive',
+                        status: 'suspended',
+                        actionAvailable: 'Activate',
+                        suspended: true,
+                        suspensionDate: now.toISOString()
+                    };
+                } else if (action === 'Activate') {
+                    updates = {
+                        ...user,
+                        customerStatusID: 'Active',
+                        status: 'active',
+                        actionAvailable: 'Suspend',
+                        suspended: false
+                    };
+                }
+
+                return updates;
+            }
+            return user;
+        }).filter(user => user)); // ensures  deleted users are removed
     };
 
     return (
         <div>
-            <Header isLoggedIn={isLoggedIn}/>
+            <Header isLoggedIn={isLoggedIn} />
             <div className="manage-users">
                 <h5>Manage Users</h5>
-                <div className="add-user-form">
-                    <input type="text" placeholder="Name" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
-                    <input type="email" placeholder="Email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} />
-                    <button onClick={addUser} className="btn btn-add">Add User</button>
-                </div>
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Actions</th>
+                            <th>Customer Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
-                            <tr key={user.userID}>
+                        {users.map(user => (
+                            <tr key={user.userID} style={{
+                                backgroundColor: user.status === 'suspended' ? 'yellow' : '',
+                                color: user.status === 'active' ? 'green' : user.status === 'suspended' ? 'red' : 'darkorange'
+                            }}>
                                 <td>{user.userID}</td>
-                                <td>{user.firstName}</td>
+                                <td>{`${user.firstName} ${user.lastName}`}</td>
                                 <td>{user.email}</td>
-                                <button onClick={() => deleteUser(user.userID)} className="btn btn-delete">Delete</button>
+                                <td>
+                                    <div className="dropdown">
+                                        <button className="dropbtn">{user.status.toUpperCase()}</button>
+                                        <div className="dropdown-content">
+                                            {user.suspended ? (
+                                                <a href="#!" onClick={() => handleAction(user.userID, 'Activate')}>Activate</a>
+                                            ) : (
+                                                <a href="#!" onClick={() => handleAction(user.userID, 'Suspend')}>Suspend</a>
+                                            )}
+                                            <a href="#!" onClick={() => handleAction(user.userID, 'Delete')}>Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
