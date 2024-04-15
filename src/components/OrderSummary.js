@@ -4,6 +4,7 @@ import Header from './Header';
 import './OrderSummary.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const OrderSummary = ({ isLoggedIn }) => {
   const location = useLocation();
@@ -15,6 +16,8 @@ const OrderSummary = ({ isLoggedIn }) => {
   const [localTicketQuantities, setLocalTicketQuantities] = useState(ticketQuantities);
   const [localSelectedSeats, setLocalSelectedSeats] = useState(selectedSeats);
   const [error, setError] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [discount, setDiscount] = useState('');
 
   const ticketPrices = { adults: 16, children: 12, seniors: 10 };
   const bookingFee = 2;
@@ -71,6 +74,25 @@ const OrderSummary = ({ isLoggedIn }) => {
   const tax = subtotal * taxRate;
   const total = subtotal + tax + bookingFee;
 
+  const handlePromo = async () => {
+    try {
+      console.log('Fetching promos for promocode:', promoCode);
+      const response = await axios.post('http://localhost:8080/getPromoByCode', {
+        "promoCode" : promoCode
+    });
+    if(response.data != ""){
+      const promo = response.data;
+      setDiscount(promo.discountApplied); 
+      alert('Fetched discount: ${discount}');
+      console.log('Fetched discount', discount);
+    }else{
+      alert("Invalid promo code");
+    }
+    } catch (error) {
+      console.error('Error fetching seats:', error);
+    }
+  };
+
   const handleBack = () => {
     navigate(-1);
   };
@@ -118,6 +140,15 @@ const OrderSummary = ({ isLoggedIn }) => {
                 </div>
               </div>
             ))}
+          </div>
+          <div className="promo-code-section">
+          <input 
+                  type="text" 
+                  placeholder="Promo Code"
+                  value={promoCode} // Bind the value of the input field to the promoCode state variable
+                  onChange={(e) => setPromoCode(e.target.value)} // Update the promoCode state variable when the input value changes
+                />
+          <button className="apply-button" onClick={handlePromo}>Apply</button>
           </div>
           <div className="detail-line">Subtotal: ${subtotal.toFixed(2)}</div>
           <div className="detail-line">Tax (7%): ${tax.toFixed(2)}</div>

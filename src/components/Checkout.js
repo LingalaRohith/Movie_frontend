@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import './Checkout.css';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 
 function Checkout({isLoggedIn}) {
@@ -18,7 +20,7 @@ function Checkout({isLoggedIn}) {
   const [useSavedCard, setUseSavedCard] = useState(false); // Starts as false indicating new card details are shown by default
   const location = useLocation();
   const { movie, selectedSeats, localTicketQuantities, showShowDates, showShowTimes, localSelectedSeats} = location.state || { localTicketQuantities: { adults: 0, children: 0, seniors: 0 }, selectedSeats: [], movie: {}, showShowDates: '', showShowTimes: '', localSelectedSeats: [] };
-  
+  const [card,setCard] = useState([]);
   // Example ticket prices
   const ticketPrices = { adults: 16, children: 12, seniors: 10 };
   const bookingFee = 2;
@@ -42,6 +44,24 @@ function Checkout({isLoggedIn}) {
       }
     });
   };
+
+  useEffect(() => {
+    const fetchcards = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/getcustomerx', {
+            "email" : localStorage.getItem('email')
+        });
+        const user = response.data['200'];
+        setCard(user.cardDetails);
+        console.log('card details :', card);
+        // setShowId(show.showId);
+      } catch (error) {
+        console.error('Error fetching show ID:', error);
+      }
+    };
+    fetchcards();
+  }, []);
+  
   
   const savedCard = {
       cardNumber: '●●●● ●●●● ●●●● 5058',
@@ -189,7 +209,7 @@ function Checkout({isLoggedIn}) {
               required
             />
         
-   <div className="order-summary-card" >
+   {/* <div className="order-summary-card" >
           <h2>Order Summary</h2>
           <div className="order-summary-item"> 
           <p>{movie.title}</p>
@@ -226,7 +246,7 @@ function Checkout({isLoggedIn}) {
     </div>
   </div>
   {/* ... */}
-</div>
+{/* </div>
 </div>
 
     <div className="order-summary-item"> 
@@ -242,7 +262,7 @@ function Checkout({isLoggedIn}) {
           <button className="apply-button">Apply</button>
 
 </div>
-        </div>
+        </div>  */}
         </form>
         <div class="button-container">
         <button type="button" className="order-button cancel-order-btn" onClick={() => navigate('/')}>
