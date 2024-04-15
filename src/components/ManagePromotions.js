@@ -84,7 +84,6 @@ function ManagePromotions({isLoggedIn}) {
 
     return (
         <div>
-            <Header isLoggedIn={isLoggedIn}/>
             <div className="manage-promotions"> 
             <h5>Manage Promotions</h5>
             <div className="promotion-list">

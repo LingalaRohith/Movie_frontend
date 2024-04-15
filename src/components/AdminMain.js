@@ -12,7 +12,6 @@ function AdminMain({isLoggedIn, setisLoggedIn}) {
 
     return (
         <div>
-            <Header isLoggedIn={isLoggedIn} setisLoggedIn={setisLoggedIn}/>
             <div className='admin'>
                 <h1>Administrator Home Page</h1>
                 <h2>Options: </h2>

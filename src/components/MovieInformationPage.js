@@ -132,7 +132,6 @@ useEffect(() => {
   
   return (
     <div className="App">
-      <Header isLoggedIn={isLoggedIn}/>
       <div className="modal-content">
       <h2>{movie?.title}</h2>
         <div className="video-and-synopsis">

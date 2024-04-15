@@ -109,11 +109,6 @@ function ForgotPasswordMail() {
 
     return (
         <div>
-            {isLoggedIn ? (
-                <Header loggedIn={isLoggedIn} />
-            ) : (
-                <Header />
-            )}
             <div className="password-change-container">
                 <h2>Forgot Password</h2>
                 <form className="password-change-form" onSubmit={handleSubmit}>

@@ -117,7 +117,6 @@ const renderSeats = () => {
   
   return (
     <div>
-      <Header isLoggedIn={isLoggedIn}/>
       <div className="book-seats">
         {movie && (
           <>

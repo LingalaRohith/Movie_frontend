@@ -14,11 +14,6 @@ const PasswordConfirmation = () => {
 
     return (
         <>
-            {isLoggedIn ? (
-                <Header loggedIn={isLoggedIn} />
-            ) : (
-                <Header />
-            )}
             <div className="dark-background">
                 <div className="confirmation-card">
                     <h1>Password Confirmed!</h1>

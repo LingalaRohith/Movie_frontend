@@ -152,36 +152,7 @@ import { useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { Context } from './Store';
 
-// const MovieModal = ({ movie, onClose, isLoggedIn }) => {
-//   const navigate = useNavigate();
-  
-//   const handleNavigation = () => {
-//     navigate('/movie-info', { state: { movie: movie } });
-//   };
 
-//   if (!movie) return null; 
-
-
-//   return (
-//     <div className="modal-backdrop">
-//       <div className="modal">
-//         <h2>{movie.title}</h2>
-//         <iframe
-//           width="560"
-//           height="315"
-//           src={`https://www.youtube.com/embed/${new URLSearchParams(new URL(movie.trailer).search).get('v')}`}
-//           title="YouTube video player"
-//           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-//           allowFullScreen>
-//         </iframe>
-//         <div class="bttns">
-//             <button onClick={onClose}>Close</button>
-//             {isLoggedIn && <button onClick={handleNavigation}>More Info</button>}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
 
 function LandingPage(isLoggedIn, setIsLoggedIn) {
   const [movies, setMovies] = useState([]);
@@ -255,21 +226,10 @@ function LandingPage(isLoggedIn, setIsLoggedIn) {
     (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
   );
 
-  // const location = useLocation();
-  // isLoggedIn = location.state?.isLoggedIn;
   const login = localStorage.getItem('isLogin');
 
   return (
     <div className="App">
-      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} mail={mail} pwd={pwd} name={name}/>
-      
-      {/* {login === true ? */}
-      {/* (<Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} mail={mail} pwd={pwd} name={name}/>) */}
- {/* :
-   (<Hdr2></Hdr2>
-   )} */}
-
-      <br />
       <div className='movies-and-search-container'>
         <div className="search-container">
           <select onChange={handleCategoryChange} value={selectedCategory}>

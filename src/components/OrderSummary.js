@@ -119,7 +119,6 @@ const OrderSummary = ({ isLoggedIn }) => {
   return (
     <>
     <div className="order-special-page"> 
-      <Header isLoggedIn={isLoggedIn} />
       <div className="order-summary-containers">
       <div class="main-container">
         <h2 className="order-summary-title">Order Summary</h2>

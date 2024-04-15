@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 function Verification() {
     return (
         <div>  
-            <Header /> 
             <div className="verify">
             <h1>Thank you!</h1>
             <p>Please enter the verification code sent to your email.</p>

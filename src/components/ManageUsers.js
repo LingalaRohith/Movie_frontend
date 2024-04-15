@@ -65,7 +65,6 @@ function ManageUsers({ isLoggedIn }) {
 
     return (
         <div>
-            <Header isLoggedIn={isLoggedIn} />
             <div className="manage-users">
                 <h5>Manage Users</h5>
                 <table>

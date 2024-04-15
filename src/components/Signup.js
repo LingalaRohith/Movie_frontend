@@ -131,7 +131,6 @@ const Signup = () => {
     return (
         <div>
             {/* <Header isLoggedIn={isLoggedIn} setLoggedIn={setIsLoggedIn}/> */}
-            <Hdr2></Hdr2>
             <div className="signup-container">
                 <h3>Sign Up</h3>
                 <form className="signup-form" onSubmit={handleSubmit}>
