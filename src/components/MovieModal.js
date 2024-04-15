@@ -36,9 +36,8 @@ import { useNavigate } from 'react-router-dom';
 
 // export default MovieModal;
 
-const MovieModal = ({ movie, onClose }) => {
+const MovieModal = ({ movie, onClose, isLoggedIn }) => {
   const navigate = useNavigate();
-  
   const handleNavigation = () => {
     navigate('/movie-info', { state: { movie: movie } });
   };
@@ -60,7 +59,7 @@ const MovieModal = ({ movie, onClose }) => {
         </iframe>
         <div class="bttns">
             <button onClick={onClose}>Close</button>
-            {<button onClick={handleNavigation}>More Info</button>}
+            {isLoggedIn && <button onClick={handleNavigation}>More Info</button>} 
         </div>
       </div>
     </div>

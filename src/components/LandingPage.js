@@ -142,8 +142,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
-import Hdr2 from './Header2';
+import Header from './Header.js';
 import axios from 'axios';
 import MovieModal from './MovieModal';
 import './landingpage.css'
@@ -154,7 +153,7 @@ import { Context } from './Store';
 
 
 
-function LandingPage(isLoggedIn, setIsLoggedIn) {
+function LandingPage({isLoggedIn}) {
   const [movies, setMovies] = useState([]);
   const [currentlyRunningMovies, setCurrentlyRunningMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
@@ -279,7 +278,7 @@ function LandingPage(isLoggedIn, setIsLoggedIn) {
       </div>
 
       {isModalOpen && (
-        <MovieModal movie={selectedMovie} onClose={handleCloseModal} onMoreInfo={handleMoreInfo} />
+        <MovieModal movie={selectedMovie} onClose={handleCloseModal} onMoreInfo={handleMoreInfo} isLoggedIn={isLoggedIn}/>
       )}
     </div>
   );
