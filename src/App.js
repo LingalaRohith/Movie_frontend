@@ -23,6 +23,8 @@ import PasswordConfirmation from './components/PasswordConfirmation';
 import VerifyAccount from './components/VerifyAccount';
 import ForgotPasswordMail from './components/ForgotPasswordMail';
 import Header from './components/Header';
+import TicketPrice from "./components/TicketPrice";
+
 function App() {
     const [isLoggedIn, setLoggedIn] = useState(false);
     //localStorage.setItem('isLogin', false);
@@ -54,6 +56,8 @@ function App() {
             <Route path="/verify-account" element={<VerifyAccount isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} /> 
             <Route path="/registration-confirmation" element={<RegistrationConfirmation isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} /> 
             <Route path="/forgotPasswordMail" element={<ForgotPasswordMail isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn}/>}/>
+            <Route path="/admin/manage-price" element={<TicketPrice />} />
+
           </Routes>
         </Router>
         </div>

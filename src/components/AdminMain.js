@@ -18,6 +18,8 @@ function AdminMain({isLoggedIn, setisLoggedIn}) {
                 <button onClick={() => handleNavigation('/admin/manage-users')}>Manage Users</button>
                 <button onClick={() => handleNavigation('/admin/manage-movies')}>Manage Movies</button>
                 <button onClick={() => handleNavigation('/admin/manage-promotions')}>Manage Promotions</button>
+                <button onClick={() => handleNavigation('/admin/manage-price')}>Manage Prices</button>
+
             </div>
         </div>
     );

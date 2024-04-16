@@ -19,9 +19,13 @@ const OrderSummary = ({ isLoggedIn }) => {
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState('');
 
-  const ticketPrices = { adults: 16, children: 12, seniors: 10 };
-  const bookingFee = 2;
-  const taxRate = 0.07; // 7%
+  const ticketPrices = {
+    adults: parseFloat(localStorage.getItem('price_adult')) || 16,
+    children: parseFloat(localStorage.getItem('price_child')) || 10,
+    seniors: parseFloat(localStorage.getItem('price_senior')) || 12
+};
+const bookingFee = parseFloat(localStorage.getItem('bookingFee')) || 2;
+const taxRate = 0.07; // 7%%
 
   const updateTicketQuantity = (type, increment) => {
     setLocalTicketQuantities(prev => {
