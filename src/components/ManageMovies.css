@@ -4,8 +4,7 @@
     margin: auto;
 }
 
-
-h5{ 
+h5 { 
     font-weight: 700;
     font-size: 1.5em;
     color: #080533;
@@ -15,68 +14,68 @@ h5{
 .add-movie-form {
     margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Change to column layout */
     align-items: center;
 }
 
-.add-movie-form input[type="text"],
-.add-movie-form input[type="email"] {
-    margin-right: 10px;
-    padding: 8px;
-    flex-grow: 1;
+.add-movie-form input[type="text"] {
+    width: 100%;
+    padding: 8px; /* Adjust padding as needed */
+    margin-bottom: 10px; /* Add spacing between input boxes */
 }
 
 .add-movie-form button {
-    padding: 8px 15px;
-    cursor: pointer;
+    margin-top: 10px; /* Add spacing between input boxes and the button */
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.movie-list {
+    display: flex;
+    flex-direction: column;
 }
 
-table, th, td {
-    border: 1px solid #ddd;
+.movie {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-th, td {
-    text-align: left;
-    padding: 8px;
+.movie img {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
 }
 
-th {
-    background-color: #f2f2f2;
+.movie-info h3 {
+    margin: 0;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.btn-add {
-    padding: 5px 20px;
-    min-width: 120px;
-    cursor: pointer;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-.btn-delete {
-    padding: 5px 20px;
-    min-width: 100px;
-    cursor: pointer;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-button {
+.btn {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+.btn-add {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-delete {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-edit {
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+
 
 
 

@@ -8,13 +8,52 @@ function ManageMovies() {
         { id: 2, name: 'Madame Web', img: 'https://shorturl.at/ruvL2', showtimes: [] },
         { id: 3, name: 'Dune: Part Two', img: 'https://shorturl.at/BGVX2', showtimes: [] },
         { id: 4, name: 'Kung Fu Panda 4', img: 'https://shorturl.at/fyP09', showtimes: [] },
+        {
+            id: 5,
+            name: "GK",
+            movieCast: null,
+            movieCategory: "Drama",
+            movieDirector: null,
+            movieProducer: null,
+            releaseDate: "2025-02-20",
+            synopsis: null,
+            reviews: null,
+            trailerLink: "https://www.youtube.com/watch?v=DYLG65xz55U",
+            movieCertificationCode: null,
+            rating: 4,
+            movieAvailability: null,
+            posterSrc: "https://cdn.gulte.com/wp-content/uploads/2023/12/Guntur-Kaaram-Posters3.png",
+            bannerSrc: null,
+            language: null,
+            showtimes: []
+        }
     ];
 
     const [movies, setMovies] = useState(initialMovies);
     const [newMovieName, setNewMovieName] = useState('');
     const [newMovieImg, setNewMovieImg] = useState('');
     const [editingMovieId, setEditingMovieId] = useState(null);
-    const [newShowtime, setNewShowtime] = useState('');
+    const [showAddMovieForm, setShowAddMovieForm] = useState(false); // State to track visibility of add movie form
+    const [movieFields, setMovieFields] = useState({
+        movieCast: '',
+        movieCategory: '',
+        movieDirector: '',
+        movieProducer: '',
+        releaseDate: '',
+        synopsis: '',
+        reviews: '',
+        trailerLink: '',
+        movieCertificationCode: '',
+        rating: '',
+        movieAvailability: '',
+        bannerSrc: '',
+        language: ''
+    });
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setMovieFields({ ...movieFields, [name]: value });
+    };
 
     const addMovie = () => {
         if (!newMovieName) return; // Basic validation
@@ -22,11 +61,28 @@ function ManageMovies() {
             id: movies.length + 1, // Simple id assignment
             name: newMovieName,
             img: newMovieImg,
+            ...movieFields,
             showtimes: [],
         };
         setMovies([...movies, newMovie]);
         setNewMovieName('');
         setNewMovieImg('');
+        setMovieFields({
+            movieCast: '',
+            movieCategory: '',
+            movieDirector: '',
+            movieProducer: '',
+            releaseDate: '',
+            synopsis: '',
+            reviews: '',
+            trailerLink: '',
+            movieCertificationCode: '',
+            rating: '',
+            movieAvailability: '',
+            bannerSrc: '',
+            language: ''
+        });
+        setShowAddMovieForm(false); // Hide the add movie form after adding a movie
     };
 
     const deleteMovie = (id) => {
@@ -37,28 +93,30 @@ function ManageMovies() {
         setEditingMovieId(id);
     };
 
-    const addShowtime = () => {
-        if (newShowtime.trim() !== '') {
-            setMovies((prevMovies) =>
-                prevMovies.map((movie) =>
-                    movie.id === editingMovieId
-                        ? { ...movie, showtimes: [...movie.showtimes, newShowtime] }
-                        : movie
-                )
-            );
-            setNewShowtime('');
-        }
-    };
-
     const saveEditedMovie = (id) => {
         setMovies((prevMovies) =>
             prevMovies.map((movie) =>
-                movie.id === id ? { ...movie, name: newMovieName || movie.name, img: newMovieImg || movie.img } : movie
+                movie.id === id ? { ...movie, name: newMovieName || movie.name, img: newMovieImg || movie.img, ...movieFields } : movie
             )
         );
         setEditingMovieId(null);
         setNewMovieName('');
         setNewMovieImg('');
+        setMovieFields({
+            movieCast: '',
+            movieCategory: '',
+            movieDirector: '',
+            movieProducer: '',
+            releaseDate: '',
+            synopsis: '',
+            reviews: '',
+            trailerLink: '',
+            movieCertificationCode: '',
+            rating: '',
+            movieAvailability: '',
+            bannerSrc: '',
+            language: ''
+        });
     };
 
     return (
@@ -67,125 +125,96 @@ function ManageMovies() {
             <div className="manage-movies">
                 <h5>Manage Movies</h5>
                 <div className="add-movie-form">
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={newMovieName}
-                        onChange={(e) => setNewMovieName(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Image URL"
-                        value={newMovieImg}
-                        onChange={(e) => setNewMovieImg(e.target.value)}
-                    />
-                    <button onClick={addMovie} className="btn btn-add">
-                        Add Movie
+                    {showAddMovieForm && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                value={newMovieName}
+                                onChange={(e) => setNewMovieName(e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Image URL"
+                                value={newMovieImg}
+                                onChange={(e) => setNewMovieImg(e.target.value)}
+                            />
+                            {Object.keys(movieFields).map((field) => (
+                                <input
+                                    key={field}
+                                    type="text"
+                                    placeholder={`New ${field}`}
+                                    value={movieFields[field]}
+                                    name={field}
+                                    onChange={handleInputChange}
+                                />
+                            ))}
+                            <button onClick={addMovie} className="btn btn-add">
+                                Add Movie
+                            </button>
+                        </>
+                    )}
+                    <button onClick={() => setShowAddMovieForm(!showAddMovieForm)} className="btn btn-add">
+                        {showAddMovieForm ? 'Cancel' : 'Add Movie'}
                     </button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            {movies.map((movie) => (
-                                <th key={movie.id}>{movie.name}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {movies.map((movie) => (
-                                <td key={movie.id}>
-                                    <img
-                                        src={movie.img}
-                                        alt={movie.name}
-                                        width="100px"
-                                        height="200px"
-                                    ></img>
-                                    {editingMovieId === movie.id ? (
-                                        <div>
-                                            <input
-                                                type="text"
-                                                placeholder="New Name"
-                                                value={newMovieName}
-                                                onChange={(e) => setNewMovieName(e.target.value)}
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Image URL"
-                                                value={newMovieImg}
-                                                onChange={(e) => setNewMovieImg(e.target.value)}
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Cast"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Director"
-                                            />
-                                            <input
+                <div className="movie-list">
+                    {movies.map((movie) => (
+                        <div key={movie.id} className="movie">
+                            <img src={movie.img} alt={movie.name} />
+                            <div className="movie-info">
+                                <h3>{movie.name}</h3>
+                                {editingMovieId === movie.id ? (
+                                    <div>
+                                        <input
                                             type="text"
-                                            placeholder="New Category"
-                                            />
+                                            placeholder="New Name"
+                                            value={newMovieName}
+                                            onChange={(e) => setNewMovieName(e.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            placeholder="New Image URL"
+                                            value={newMovieImg}
+                                            onChange={(e) => setNewMovieImg(e.target.value)}
+                                        />
+                                        {Object.keys(movieFields).map((field) => (
                                             <input
+                                                key={field}
                                                 type="text"
-                                                placeholder="New Producer"
+                                                placeholder={`New ${field}`}
+                                                value={movieFields[field]}
+                                                name={field}
+                                                onChange={handleInputChange}
                                             />
-                                            <input
-                                                type="text"
-                                                placeholder="New Synopsis"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Reviews"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Review"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Trailer"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="New Film Rating"
-                                            />
-                                            <button
-                                                onClick={() => saveEditedMovie(movie.id)}
-                                                className="btn btn-delete"
-                                            >
-                                                Save
-                                            </button>
-                                            <input type="text"
-                                            placeholder="New Showtime"
-                                            value={newShowtime}
-                                            onChange={(e) => setNewShowtime(e.target.value)}
-                                            />
-                                            <button onClick={addShowtime} className="btn btn-add"> Add Showtime
-                                             </button>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <button
-                                                onClick={() => deleteMovie(movie.id)}
-                                                className="btn btn-delete"
-                                            >
-                                                Delete Movie
-                                            </button>
-                                            <button
-                                                onClick={() => editMovie(movie.id)}
-                                                className="btn btn-delete"
-                                            >
-                                                Edit Movie
-                                            </button>
-                                        </div>
-                                    )}
-                                </td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
+                                        ))}
+                                        <button
+                                            onClick={() => saveEditedMovie(movie.id)}
+                                            className="btn btn-save"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <button
+                                            onClick={() => deleteMovie(movie.id)}
+                                            className="btn btn-delete"
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            onClick={() => editMovie(movie.id)}
+                                            className="btn btn-edit"
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
