@@ -3,51 +3,77 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Seat from './Seat';
 import Header from './Header';
 import './BookSeats.css';
-
+import axios from 'axios';
 function BookSeats({ isLoggedIn }) {
+  const [showId, setShowId] = useState(null);
+  const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [takenSeats, setTakenSeats] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const { movie, ticketQuantities, showShowDates, showShowTimes, existingSelections } = location.state || {};
+  const { movie, ticketQuantities, showDates, showTimes, existingSelections, selectedShowTime, selectedDate } = location.state || {};
   // Calculate the total tickets needed from the ticketQuantities passed in state
   const totalTicketsRequired = ticketQuantities ? Object.values(ticketQuantities).reduce((acc, value) => acc + value, 0) : 0;
 
   useEffect(() => {
-    // Initialize taken seats and optionally pre-populate selected seats if coming from OrderSummary
-    const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    const seatsPerRow = 10;
-    const newTakenSeats = rows.flatMap(row =>
-      Array.from({ length: seatsPerRow }, (_, i) =>
-        Math.random() < 0.3 ? `${row}${i + 1}` : null
-      ).filter(Boolean)
-    );
-
-    setTakenSeats(newTakenSeats);
-
-    if (existingSelections) {
-      setSelectedSeats(existingSelections);
-    }
-  }, [existingSelections]); // Reacting to existingSelections ensures we reset selectedSeats if coming back to add more
-
+    const fetchShowID = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/getShow', {
+          "showDate": location.state?.showDates,
+          "showTime": parseInt(location.state?.showTimes, 10)
+        });
+        const show = response.data['400'];
+        setShowId(show.showId);
+      } catch (error) {
+        console.error('Error fetching show ID:', error);
+      }
+    };
+    fetchShowID();
+  }, []);
+  
+  useEffect(() => {
+    console.log('Updated showId:', showId);
+  }, [showId]); 
+  
+   
+  useEffect(() => {
+    const fetchSeats = async () => {
+      if (showId) { 
+        try {
+          console.log('Fetching seats for showId:', showId);
+          const response = await axios.post('http://localhost:8080/getReservedSeats', {"showID": showId});
+          const reservedSeats = response.data['400'];
+          setTakenSeats(reservedSeats); 
+          console.log('Fetched reserved seats:', reservedSeats);
+        } catch (error) {
+          console.error('Error fetching seats:', error);
+        }
+      }
+    };
+  
+    fetchSeats();
+  }, [showId]);  
+  
+    
   const navigateToOrderSummary = () => {
     if (selectedSeats.length < totalTicketsRequired) {
-      alert(`Please select ${totalTicketsRequired} seats before continuing.`);
-      return;
+        alert(`Please select ${totalTicketsRequired} seats before continuing.`);
+        return;
     }
     navigate('/ordersummary', { 
-      state: { 
-        movie, 
-        selectedSeats, 
-        ticketQuantities, 
-        showShowDates,
-        showShowTimes,
-      } 
+        state: { 
+            movie, 
+            selectedSeats, 
+            ticketQuantities, 
+            showDates,
+            showTimes,
+            totalTicketsRequired 
+        } 
     });
-  };
+};
 
-  const handleSeatClick = (seatId) => {
-    // Existing seat click logic to select/deselect seats
+
+const handleSeatClick = (seatId) => {
     if (!takenSeats.includes(seatId)) {
       setSelectedSeats((prevSelectedSeats) => {
         if (prevSelectedSeats.includes(seatId)) {
@@ -63,7 +89,8 @@ function BookSeats({ isLoggedIn }) {
   };
 
 
-  const renderSeats = () => {
+const renderSeats = () => {
+    console.log('render: ' + takenSeats); 
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; 
     const seatsPerRow = 10; 
     return rows.map((row) => (
@@ -87,18 +114,18 @@ function BookSeats({ isLoggedIn }) {
     ));
   };
   
+  
   return (
     <div>
-      <Header isLoggedIn={isLoggedIn}/>
       <div className="book-seats">
         {movie && (
           <>
             <div className="movie-info">
-              <img src={movie.img} alt={`Poster for ${movie.title}`} className="movie-poster" />
+              <img src={movie.posterSrc} alt={`Poster for ${movie.title}`} className="movie-poster" />
               <hr className="divider" />
-              <h2 className="movie-title">{movie.title}</h2>
-              <p className="show-dates"> {showShowDates}</p>
-              <p className="show-times"> {location.state.showShowTimes}</p>
+              <h2 className="movie-title">{movie.movieTitle}</h2>
+              <p className="show-dates"> {showDates}</p>
+              <p className="show-times"> {location.state.showTimes}:00</p>
             </div>
             <header className="booking-header">
               <h1>Select Your Seats</h1>
@@ -112,7 +139,6 @@ function BookSeats({ isLoggedIn }) {
             {selectedSeats.length > 0 && <p>Selected: {selectedSeats.join(', ')}</p>}
             <button className="next-button" 
             onClick={navigateToOrderSummary} 
-            //   disabled={selectedSeats.length === 0} 
             > Next</button></>
         )}
       </div>
@@ -121,7 +147,3 @@ function BookSeats({ isLoggedIn }) {
 }
 
 export default BookSeats;
-
- 
-
-

@@ -27,11 +27,6 @@ function ForgotPassword() {
 
     return (
         <div>
-            {isLoggedIn ? (
-                <Header loggedIn={isLoggedIn} />
-            ) : (
-                <Header />
-            )}
             <div className="forgot-password-container">
                 <h2>Forgot Password</h2>
                 <form className="forgot-password-form" onSubmit={handleSubmit}>

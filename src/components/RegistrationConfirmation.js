@@ -24,15 +24,6 @@ const RegistrationConfirmation = () => {
 
     return (
         <>
-            {isLoggedIn ? (
-                // Render the Header as if the user is logged in
-                // <Header loggedIn={true} />
-                <Header isLoggedIn={isLoggedIn} setLoggedIn={setIsLoggedIn}/>
-            ) : (
-                // Render the Header in the default state
-                // <Header />
-                <Header isLoggedIn={isLoggedIn} setLoggedIn={setIsLoggedIn}/>
-            )}
             <div className="dark-background">
                 <div className="confirmation-card">
                     <h1>Registration Successful</h1>

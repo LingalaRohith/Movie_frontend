@@ -15,9 +15,9 @@ const Hdr = (props) => {
     email: props.mail,
     password: props.pwd,
   });
+  
 
   useEffect(() => {
-    // Assuming user data is stored in localStorage as 'userData'
     const userData = JSON.parse(localStorage.getItem('userData'));
     if (userData) {
       setUserInitial(userData.firstName.charAt(0).toUpperCase());
@@ -26,8 +26,7 @@ const Hdr = (props) => {
   }, []);
 
   const handleLogout = () => {
-    // setLoggedIn(false);  //false
-    // props.isLoggedIn.setLoggedIn(false);
+    props.setLoggedIn(false);
     localStorage.setItem('isLogin',false);
     // localStorage.removeItem('email');
     localStorage.removeItem('userData');
@@ -49,11 +48,10 @@ const Hdr = (props) => {
     </Link>
     <h1>Cinema Hub</h1>
     <div className="buttons">
-        {/* {props.isLoggedIn ? ( */}
-        {/* { props.isLoggedIn ? ( */}
+        {props.isLoggedIn ? (
           <>
-            <Link to="/" >
-              <button>Home</button>
+            <Link to="/">
+                <button>Home</button>
             </Link>
             <Link to="/">
               <button>Book Movies</button>
@@ -63,19 +61,15 @@ const Hdr = (props) => {
             <div className='user-info' onClick={toggleDropdown}>
             <div className='user-initial'>{userInitial}</div>
               <div className={`dropdown-menu ${showDropdown ? 'show' : ''}`}>
-              <div className='dropdown-item-greeting'>Hi {props.name}!</div>
-              <Link to="/editprofile">
+              <div className='dropdown-item-greeting'>Hi {firstName}!</div>
+                <Link to="/editprofile">
                   <div className='dropdown-item'>Edit Profile</div>
                 </Link>
-                <Link to="/password-change">
-                <div className='dropdown-item'> Reset Password</div>
-              </Link>
-                {/* <div className='dropdown-item' onClick={handleProfile}>Edit Profile</div> */}
                 <div className='dropdown-item' onClick={handleLogout}>Sign out</div>
               </div>
             </div>
           </>
-        {/* ) : (
+        ) : (
           <>
             <Link to="/login">
               <button>Login</button>
@@ -87,11 +81,11 @@ const Hdr = (props) => {
               <button>Home</button>
             </Link>
           </>
-        ) */}
-        {/* } */}
+        )}
       </div>
     </div>
   );
 };
 
 export default Hdr;
+

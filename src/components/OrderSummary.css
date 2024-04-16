@@ -113,4 +113,16 @@
   
 
   }
+
+  .promo-code-section {
+    display: flex;
+    justify-content: space-between; 
+    margin-top: 20px; 
+  }
+  
+  .promo-code-section button {
+    background-color: green; 
+    border-radius: 0px; 
+  
+  }
   

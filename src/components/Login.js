@@ -46,9 +46,8 @@ function Login(props) {
       } else if (response.data['200']) {
           // Success
           setPopupMessage('Login successful!');
-          // setLoggedIn(true);
-          // isLoggedIn = true;
-          console.log(isLoggedIn);
+          props.setLoggedIn(true);
+          console.log(props.isLoggedIn);
           localStorage.setItem('isLogin', true);
           if (response.data['200'].customer.userRole === 'Customer')
           {
@@ -80,9 +79,6 @@ function Login(props) {
 
     return (
       <div>  
-        {/* {isLoggedIn ? <Header isLoggedIn={isLoggedIn} setLoggedIn={setIsLoggedIn}/> : <Header isLoggedIn={false} setLoggedIn={setIsLoggedIn}/> } */}
-        {/* <Header isLoggedIn={isLoggedIn} setLoggedIn={props.setIsLoggedIn}/> */}
-        <Hdr2></Hdr2>
         <div className="signup-container">
             <h3>Log in:</h3>
             <form onSubmit={handleSubmit} className="signup-form">

@@ -23,7 +23,6 @@ function  OrderConfirmation({isLoggedIn}) {
 
   return (
     <> 
-    <Header isLoggedIn={isLoggedIn}/>
     <div className="order-confirmation-container">
     <div className="order-confirmation-container">
     <div className="checkmark-wrapper">

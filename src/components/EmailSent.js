@@ -21,11 +21,6 @@ const EmailSent = () => {
 
     return (
         <>
-            {isLoggedIn ? (
-                <Header loggedIn={isLoggedIn} />
-            ) : (
-                <Header />
-            )}
             <div className="dark-background">
                 <div className="confirmation-card">
                     <h1>Sent Instructions</h1>

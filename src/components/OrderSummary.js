@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import './OrderSummary.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const OrderSummary = ({ isLoggedIn }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { movie, selectedSeats, ticketQuantities, showShowDates, showShowTimes } = location.state || {
-    movie: {}, selectedSeats: [], ticketQuantities: {}, showShowDates: '', showShowTimes: ''
+  const { movie, selectedSeats, ticketQuantities, showDates, showTimes, selectedShowTime, selectedDate } = location.state || {
+    movie: {}, selectedSeats: [], ticketQuantities: {}, showDates: '', showTimes: ''
   };
   const [localTicketQuantities, setLocalTicketQuantities] = useState(ticketQuantities);
   const [localSelectedSeats, setLocalSelectedSeats] = useState(selectedSeats);
   const [error, setError] = useState('');
+  const [promoCode, setPromoCode] = useState('');
+  const [discount, setDiscount] = useState(0);
 
-  const ticketPrices = { adults: 16, children: 12, seniors: 10 };
-  const bookingFee = 2;
-  const taxRate = 0.07; // 7%
+  const ticketPrices = {
+    adults: parseFloat(localStorage.getItem('price_adult')) || 16,
+    children: parseFloat(localStorage.getItem('price_child')) || 10,
+    seniors: parseFloat(localStorage.getItem('price_senior')) || 12
+};
+const bookingFee = parseFloat(localStorage.getItem('bookingFee')) || 2;
+const taxRate = 0.07; // 7%%
 
   const updateTicketQuantity = (type, increment) => {
     setLocalTicketQuantities(prev => {
@@ -40,6 +47,11 @@ const OrderSummary = ({ isLoggedIn }) => {
     });
   };
 
+  useEffect(() => {
+    console.log(showDates); 
+    console.log(showTimes);
+  }, [movie]);
+
   const adjustSeatsForTicketChange = (newTicketQuantities) => {
     const newTotalTickets = Object.values(newTicketQuantities).reduce((acc, curr) => acc + curr, 0);
     let updatedSelectedSeats = [...localSelectedSeats];
@@ -50,8 +62,8 @@ const OrderSummary = ({ isLoggedIn }) => {
           movie,
           existingSelections: updatedSelectedSeats,
           ticketQuantities: newTicketQuantities,
-          showShowDates,
-          showShowTimes,
+          showDates,
+          showTimes,
           additionalSeatsNeeded: newTotalTickets - updatedSelectedSeats.length
         }
       });
@@ -64,7 +76,24 @@ const OrderSummary = ({ isLoggedIn }) => {
   const calculatePrice = (ticketType) => localTicketQuantities[ticketType] ? localTicketQuantities[ticketType] * ticketPrices[ticketType] : 0;
   const subtotal = Object.keys(localTicketQuantities).reduce((acc, curr) => acc + calculatePrice(curr), 0);
   const tax = subtotal * taxRate;
-  const total = subtotal + tax + bookingFee;
+  const total = subtotal + tax + bookingFee - discount;
+
+  const handlePromo = async () => {
+    try {
+      console.log('Fetching promos for promocode:', promoCode);
+      const response = await axios.post('http://localhost:8080/getPromoByCode', { "promoCode" : promoCode });
+      if (response.data !== "") {
+        const promo = response.data;
+        console.log('Promo discount to apply:', promo.discountApplied);
+        setDiscount(promo.discountApplied);
+      } else {
+        alert("Invalid promo code");
+      }
+    } catch (error) {
+      console.error('Error fetching promo:', error);
+    }
+  };
+  
 
   const handleBack = () => {
     navigate(-1);
@@ -81,10 +110,11 @@ const OrderSummary = ({ isLoggedIn }) => {
           localTicketQuantities, 
           movie, 
           subtotal, 
-          tax, 
+          tax,
+          discount, 
           total, 
-          showShowDates, 
-          showShowTimes 
+          showDates, 
+          showTimes 
         }
       });
     }
@@ -92,14 +122,13 @@ const OrderSummary = ({ isLoggedIn }) => {
   return (
     <>
     <div className="order-special-page"> 
-      <Header isLoggedIn={isLoggedIn} />
       <div className="order-summary-containers">
       <div class="main-container">
         <h2 className="order-summary-title">Order Summary</h2>
         <div className="order-summary-details">
-          <div className="detail-line">Movie: {movie.title}</div>
-          <div className="detail-line">Show Date: {showShowDates}</div>
-          <div className="detail-line">Show Time: {showShowTimes}</div>
+          <div className="detail-line">Movie: {movie.movieTitle}</div>
+          <div className="detail-line">Show Date: {showDates}</div>
+          <div className="detail-line">Show Time: {showTimes}:00</div>
           <div className="detail-line">Selected Seats: {localSelectedSeats.join(', ')}</div>
           <div className="tickets-container">
             {Object.entries(localTicketQuantities).map(([type, quantity]) => (
@@ -114,14 +143,24 @@ const OrderSummary = ({ isLoggedIn }) => {
               </div>
             ))}
           </div>
+          <div className="promo-code-section">
+          <input 
+                  type="text" 
+                  placeholder="Promo Code"
+                  value={promoCode} // Bind the value of the input field to the promoCode state variable
+                  onChange={(e) => setPromoCode(e.target.value)} // Update the promoCode state variable when the input value changes
+                />
+          <button className="apply-button" onClick={handlePromo}>Apply</button>
+          </div>
           <div className="detail-line">Subtotal: ${subtotal.toFixed(2)}</div>
           <div className="detail-line">Tax (7%): ${tax.toFixed(2)}</div>
           <div className="detail-line">Booking Fee: ${bookingFee.toFixed(2)}</div>
+          {discount !== 0 && <div className="detail-line">Discount from promo code: -${discount.toFixed(2)}</div>}
           <div className="detail-line total">Total: ${total.toFixed(2)}</div>
           </div> 
           <div className="button-container">
           <button className="order-summary-button back-button" onClick={handleBack}>
-            <FontAwesomeIcon icon={faArrowLeft} /> {/* FontAwesome arrow icon */}
+            <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button className="order-summary-button confirm-continue-button" onClick={navigateToCheckout}>Confirm and Continue</button>
           </div>
