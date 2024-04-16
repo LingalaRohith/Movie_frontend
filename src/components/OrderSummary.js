@@ -17,7 +17,7 @@ const OrderSummary = ({ isLoggedIn }) => {
   const [localSelectedSeats, setLocalSelectedSeats] = useState(selectedSeats);
   const [error, setError] = useState('');
   const [promoCode, setPromoCode] = useState('');
-  const [discount, setDiscount] = useState('');
+  const [discount, setDiscount] = useState(0);
 
   const ticketPrices = {
     adults: parseFloat(localStorage.getItem('price_adult')) || 16,
@@ -76,26 +76,24 @@ const taxRate = 0.07; // 7%%
   const calculatePrice = (ticketType) => localTicketQuantities[ticketType] ? localTicketQuantities[ticketType] * ticketPrices[ticketType] : 0;
   const subtotal = Object.keys(localTicketQuantities).reduce((acc, curr) => acc + calculatePrice(curr), 0);
   const tax = subtotal * taxRate;
-  const total = subtotal + tax + bookingFee;
+  const total = subtotal + tax + bookingFee - discount;
 
   const handlePromo = async () => {
     try {
       console.log('Fetching promos for promocode:', promoCode);
-      const response = await axios.post('http://localhost:8080/getPromoByCode', {
-        "promoCode" : promoCode
-    });
-    if(response.data != ""){
-      const promo = response.data;
-      setDiscount(promo.discountApplied); 
-      alert('Fetched discount: ${discount}');
-      console.log('Fetched discount', discount);
-    }else{
-      alert("Invalid promo code");
-    }
+      const response = await axios.post('http://localhost:8080/getPromoByCode', { "promoCode" : promoCode });
+      if (response.data !== "") {
+        const promo = response.data;
+        console.log('Promo discount to apply:', promo.discountApplied);
+        setDiscount(promo.discountApplied);
+      } else {
+        alert("Invalid promo code");
+      }
     } catch (error) {
-      console.error('Error fetching seats:', error);
+      console.error('Error fetching promo:', error);
     }
   };
+  
 
   const handleBack = () => {
     navigate(-1);
@@ -112,7 +110,8 @@ const taxRate = 0.07; // 7%%
           localTicketQuantities, 
           movie, 
           subtotal, 
-          tax, 
+          tax,
+          discount, 
           total, 
           showDates, 
           showTimes 
@@ -156,6 +155,7 @@ const taxRate = 0.07; // 7%%
           <div className="detail-line">Subtotal: ${subtotal.toFixed(2)}</div>
           <div className="detail-line">Tax (7%): ${tax.toFixed(2)}</div>
           <div className="detail-line">Booking Fee: ${bookingFee.toFixed(2)}</div>
+          {discount !== 0 && <div className="detail-line">Discount from promo code: -${discount.toFixed(2)}</div>}
           <div className="detail-line total">Total: ${total.toFixed(2)}</div>
           </div> 
           <div className="button-container">
