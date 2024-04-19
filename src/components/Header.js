@@ -17,13 +17,19 @@ const Hdr = (props) => {
   });
   
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('userData'));
+  useEffect( () => {
+    try{
+    const response = axios.post('http://localhost:8080/getCustomerX',{"email" : localStorage.getItem('email')});
+    const userData = response.data['200'].customer;//JSON.parse(localStorage.getItem('userData'));
+    console.log(userData);
     if (userData) {
       setUserInitial(userData.firstName.charAt(0).toUpperCase());
       setFirstName(userData.firstName);
     }
-  }, []);
+  }catch{
+      console.log("error");
+  }
+}, []);
 
   const handleLogout = () => {
     props.setLoggedIn(false);
