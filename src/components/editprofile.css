@@ -76,3 +76,7 @@ body {
 .edit-profile-form button[type="button"]:hover {
     background-color: #d5d5d5;
 }
+.error {
+    color: red;
+    font-size: 0.8rem;
+}
