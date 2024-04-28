@@ -29,38 +29,85 @@ function Checkout({isLoggedIn}) {
   const subtotal = localTicketQuantities ? Object.keys(localTicketQuantities).reduce((acc, key) => acc + (localTicketQuantities[key] * ticketPrices[key]), 0) : 0;
   const taxes = subtotal * taxRate;
   const total = subtotal + bookingFee + taxes;
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null); 
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); 
-    // Navigate to OrderConfirmation page
-    navigate('/order-confirmation', {
-      state: {
-        movie: movie,
-        localSelectedSeats: localSelectedSeats, 
-        selectedSeats: selectedSeats,
-        showShowDates: showShowDates,
-        showShowTimes: showShowTimes,
-        total: total
-      }
-    });
+const handleCardClick = (index, cardDetail) => {
+  if (selectedCardIndex === index) { 
+    setSelectedCardIndex(null);
+    setUseSavedCard(false);
+  } else {
+    setSelectedCardIndex(index); 
+    setUseSavedCard(true); 
+    setCardName(cardDetail.nameOnCard);
+    setCardNumber(cardDetail.cardNumber);
+    setCVC(cardDetail.securityNumber); 
+    setExpDate(cardDetail.expiryDate);
+  }
+};
+
+
+const handleSubmit = (event) => {
+  event.preventDefault(); 
+  const cardData = selectedCardIndex !== null ? card[selectedCardIndex] : {
+    cardName,
+    cardNumber,
+    cvc,
+    expDate
   };
 
+  const formData = {
+    email,
+    cardData,
+    billingAddress,
+    city,
+    state,
+    zipCode,
+    country,
+    total
+  };
+  console.log('Submitting:', formData);
+  navigate('/order-confirmation', {
+    state: {
+      movie,
+      localSelectedSeats,
+      selectedSeats,
+      showShowDates,
+      showShowTimes,
+      total,
+      cardData,
+      formData
+    }
+  });
+};
+
+
   useEffect(() => {
-    const fetchcards = async () => {
+    const fetchCustomerDetails = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/getcustomerx', {
-            "email" : localStorage.getItem('email')
-        });
-        const user = response.data['200'];
-        setCard(user.cardDetails);
-        console.log('card details :', card);
-        // setShowId(show.showId);
+        const email = localStorage.getItem('email');  // Assuming the email is stored in local storage
+        if (!email) {
+          console.error('No email found in storage.');
+          return;
+        }
+  
+        const response = await axios.post('http://localhost:8080/getcustomerx', { email });
+        if (response.data[204]) {
+          console.log('No customer found for this email.');
+          return;
+        }
+  
+        const customerData = response.data[200];
+        setCard(customerData.cardDetails);
+        console.log('Card details:', customerData.cardDetails);
       } catch (error) {
-        console.error('Error fetching show ID:', error);
+        console.error('Error fetching customer details:', error);
       }
     };
-    fetchcards();
+  
+    fetchCustomerDetails();
   }, []);
+  
+  
   
   
   const savedCard = {
@@ -94,15 +141,29 @@ function Checkout({isLoggedIn}) {
               required
             />
 
-            <h2>Payment</h2>
-            <div className={`saved-card-display ${useSavedCard ? 'active' : ''}`} onClick={toggleUseSavedCard}>
-            <div className="card-chip"></div>
-            <div className="card-logo">{savedCard.cardType}</div>
-            <div className="card-number">{savedCard.cardNumber}</div>
-            <div className="card-holder-name">
-    <span className="card-holder-label"></span> {savedCard.cardHolder}
-  </div>
-</div>
+        <h2>Payment</h2>
+        <div className="saved-card-section">
+          <h3>Saved Cards</h3>
+          {card.length > 0 ? (
+            <div className="saved-cards-container">
+              {card.map((cardDetail, index) => (
+                <div key={index} 
+                    className={`saved-card-display ${selectedCardIndex === index ? 'selected' : ''}`} 
+                    onClick={() => handleCardClick(index, cardDetail)}>
+                  <div className="card-chip"></div>
+                  <div className="card-logo">{cardDetail.cardType}</div>
+                  <div className="card-number">{`●●●● ●●●● ●●●● ${cardDetail.cardNumber.slice(-4)}`}</div>
+                  <div className="card-holder-name">{cardDetail.nameOnCard}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-saved-cards">No saved cards available.</p>
+          )}
+        </div>
+
+
+
             {/* Show input fields if saved card is not being used */}
             {!useSavedCard && (
               <>
@@ -207,77 +268,19 @@ function Checkout({isLoggedIn}) {
               onChange={(e) => setCountry(e.target.value)}
               required
             />
-        
-   {/* <div className="order-summary-card" >
-          <h2>Order Summary</h2>
-          <div className="order-summary-item"> 
-          <p>{movie.title}</p>
-          <div className="order-summary-item">
-          <p> {showShowDates}</p>
-          <p className="show-times"> {showShowTimes}</p>
-
-          </div>
-          <div className="order-summary-item">
-          <p>Seats: {(localSelectedSeats || []).join(', ')}</p>
-          </div>
-          </div>
-            <div className="order-summary-item">
-            <div className="order-summary-item">
-  <div className="ticket-type-row">
-    <p className="ticket-type">Adult</p>
-    <div className="ticket-info">
-      <span className="ticket-quantity">Quantity: {localTicketQuantities.adults}</span>
-      <span className="ticket-price">${(localTicketQuantities.adults * ticketPrices.adults).toFixed(2)}</span>
-    </div>
-  </div>
-  <div className="ticket-type-row">
-    <p className="ticket-type">Child</p>
-    <div className="ticket-info">
-      <span className="ticket-quantity">Quantity: {localTicketQuantities.children}</span>
-      <span className="ticket-price">${(localTicketQuantities.children * ticketPrices.children).toFixed(2)}</span>
-    </div>
-  </div>
-  <div className="ticket-type-row">
-    <p className="ticket-type">Senior</p>
-    <div className="ticket-info">
-      <span className="ticket-quantity">Quantity: {localTicketQuantities.seniors}</span>
-      <span className="ticket-price">${(localTicketQuantities.seniors * ticketPrices.seniors).toFixed(2)}</span>
-    </div>
-  </div>
-  {/* ... */}
-{/* </div>
-</div>
-
-    <div className="order-summary-item"> 
-          <p>Subtotal:</p> <div className="align-right"> ${subtotal.toFixed(2)}</div> 
-            <p>Booking Fee: </p> <div className="align-right"> ${bookingFee.toFixed(2)}</div> 
-            <p>Taxes:</p> <div className="align-right"> ${taxes.toFixed(2)} </div> 
-            </div>
-            <p className="total-price">
-              Total:  </p> 
-              <div className="align-right">  ${total.toFixed(2)} </div> 
-          <div className="promo-code-section">
-          <input type="text" placeholder="Promo Code" />
-          <button className="apply-button">Apply</button>
-
-</div>
-        </div>  */}
         </form>
         <div class="button-container">
         <button type="button" className="order-button cancel-order-btn" onClick={() => navigate('/')}>
-  Cancel
-</button>
+          Cancel
+        </button>
 
 
+        <form onSubmit={handleSubmit}>
 
+        <button class="order-button submit-order-btn">Submit Order</button>
+        </form>
 
-
-<form onSubmit={handleSubmit}>
-
-<button class="order-button submit-order-btn">Submit Order</button>
-</form>
-
-</div>
+          </div>
 
 
         </div>
@@ -285,5 +288,4 @@ function Checkout({isLoggedIn}) {
     </>
   );
 }
-
 export default Checkout;
