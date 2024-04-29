@@ -25,8 +25,16 @@ function Checkout() {
   const [country, setCountry] = useState('');
   const [useSavedCard, setUseSavedCard] = useState(false); // Starts as false indicating new card details are shown by default
   const location = useLocation();
-  const { movie, selectedSeats, localTicketQuantities, showDates, showTimes, localSelectedSeats} = location.state || { localTicketQuantities: { adults: 0, children: 0, seniors: 0 }, selectedSeats: [], movie: {}, showDates: '', showTimes: '', localSelectedSeats: [] };
-  const [card,setCard] = useState([]);
+  const { movie, selectedSeats, localTicketQuantities, showDates, showTimes, localSelectedSeats, total } = location.state || {
+    localTicketQuantities: { adults: 0, children: 0, seniors: 0 },
+    selectedSeats: [],
+    movie: {},
+    showDates: '',
+    showTimes: '',
+    localSelectedSeats: [],
+    total: 0  // Default value if total isn't passed
+  };
+    const [card,setCard] = useState([]);
   // Example ticket prices
   const ticketPrices = { adults: 16, children: 12, seniors: 10 };
   const bookingFee = 2;
@@ -34,7 +42,6 @@ function Checkout() {
 
   const subtotal = localTicketQuantities ? Object.keys(localTicketQuantities).reduce((acc, key) => acc + (localTicketQuantities[key] * ticketPrices[key]), 0) : 0;
   const taxes = subtotal * taxRate;
-  const total = subtotal + bookingFee + taxes;
   const [selectedCardIndex, setSelectedCardIndex] = useState(null); 
 
   useEffect(() => {

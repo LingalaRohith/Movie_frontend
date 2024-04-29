@@ -69,6 +69,7 @@ const taxRate = 0.07; // 7%%
       navigate('/bookseats', {
         state: {
           movie,
+          total,
           existingSelections: updatedSelectedSeats,
           ticketQuantities: newTicketQuantities,
           showDates,
