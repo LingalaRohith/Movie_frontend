@@ -1,5 +1,5 @@
 .modal-content {
-  background-color: #ffffff; 
+  background-color: #ffffff;
   padding-bottom: 20px;
   padding-left: 20px;
   padding-right: 20px;
@@ -13,8 +13,9 @@
   color: black;
   text-align: center;
   font-size: 35px;
-  padding-bottom: 10px; 
+  padding-bottom: 10px;
 }
+
 .video-and-synopsis {
   display: flex;
   justify-content: space-between;
@@ -34,11 +35,12 @@
 
 .synopsis p {
   font-size: 17px;
+  color: #333; /* Ensure text color provides contrast against the background */
 }
 
 .counters {
   display: flex;
-  justify-content:center;
+  justify-content: center;
   margin-top: 20px;
 }
 
@@ -46,11 +48,15 @@
   text-align: center;
 }
 
+.counter-item p {
+  color: #333; /* Adding color to ensure readability */
+}
+
 .counter-item button {
   background-color: #ffffff;
   border: 2px solid;
   border-radius: 5px;
-  color: #081752;
+  color: #081752; /* Button text color for better visibility */
   padding: 5px 10px;
   cursor: pointer;
   margin: 0 5px;
@@ -58,6 +64,7 @@
 
 .counter-item span {
   margin: 0 10px;
+  color: #333; /* Color for numbers */
 }
 
 .dates-times-tickets select, .dates-times-tickets button {
@@ -70,7 +77,6 @@
   cursor: pointer;
 }
 
-
 .movie-details {
   margin-top: 20px;
   padding: 10px;
@@ -81,7 +87,7 @@
 .movie-details p {
   color: white;
   font-size: 17px;
-  font-weight:normal;
+  font-weight: normal;
 }
 
 /* Responsive adjustments */
@@ -102,3 +108,4 @@
     margin-bottom: 20px;
   }
 }
+

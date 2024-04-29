@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ManageMovies.css';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom'; 
+
 
 function ManageMovies() {
     const [movies, setMovies] = useState([]);
+    const { isLoggedIn } = useAuth(); 
+    const navigate = useNavigate(); 
+
     const [movieForm, setMovieForm] = useState({
         id: null,
         name: '',
@@ -27,6 +33,13 @@ function ManageMovies() {
     });
     const [showAddMovieForm, setShowAddMovieForm] = useState(false);
     const [editingSchedule, setEditingSchedule] = useState(false);
+
+    useEffect(() => {
+        if (!isLoggedIn) { 
+          console.log("Not logged in, navigating to login.");
+          navigate("/login", { replace: true });
+        }
+      }, [navigate, isLoggedIn]); 
 
     useEffect(() => {
         async function fetchMovies() {

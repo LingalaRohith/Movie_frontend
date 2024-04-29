@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from './Header';
 import './OrderSummary.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
 
-const OrderSummary = ({ isLoggedIn }) => {
+
+const OrderSummary = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const { isLoggedIn } = useAuth(); 
+  useEffect(() => {
+    if (!isLoggedIn) { 
+      console.log("Not logged in, navigating to login.");
+      navigate("/login", { replace: true });
+    }
+  }, [navigate, isLoggedIn]); 
+
 
   const { movie, selectedSeats, ticketQuantities, showDates, showTimes, selectedShowTime, selectedDate } = location.state || {
     movie: {}, selectedSeats: [], ticketQuantities: {}, showDates: '', showTimes: ''
@@ -19,12 +28,16 @@ const OrderSummary = ({ isLoggedIn }) => {
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
 
+  if (!location.state) {
+    return <p>Order information is missing. Please complete the booking process from the home page.</p>;
+  }
+
   const ticketPrices = {
-    adults: parseFloat(localStorage.getItem('price_adult')) || 16,
-    children: parseFloat(localStorage.getItem('price_child')) || 10,
-    seniors: parseFloat(localStorage.getItem('price_senior')) || 12
+    adults: parseFloat(sessionStorage.getItem('price_adult')) || 16,
+    children: parseFloat(sessionStorage.getItem('price_child')) || 10,
+    seniors: parseFloat(sessionStorage.getItem('price_senior')) || 12
 };
-const bookingFee = parseFloat(localStorage.getItem('bookingFee')) || 2;
+const bookingFee = parseFloat(sessionStorage.getItem('bookingFee')) || 2;
 const taxRate = 0.07; // 7%%
 
   const updateTicketQuantity = (type, increment) => {
@@ -47,10 +60,6 @@ const taxRate = 0.07; // 7%%
     });
   };
 
-  useEffect(() => {
-    console.log(showDates); 
-    console.log(showTimes);
-  }, [movie]);
 
   const adjustSeatsForTicketChange = (newTicketQuantities) => {
     const newTotalTickets = Object.values(newTicketQuantities).reduce((acc, curr) => acc + curr, 0);

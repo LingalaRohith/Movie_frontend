@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Header from './Header';
 import './ManageUsers.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
+import { useAuth } from './AuthContext';
 
-function ManageUsers({ isLoggedIn }) {
+
+
+function ManageUsers() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate(); 
+    const { isLoggedIn } = useAuth(); 
+    useEffect(() => {
+        if (!isLoggedIn) { 
+          console.log("Not logged in, navigating to login.");
+          navigate("/login", { replace: true });
+        }
+      }, [navigate, isLoggedIn]); 
 
     useEffect(() => {
         async function fetchUsers() {
@@ -20,7 +31,7 @@ function ManageUsers({ isLoggedIn }) {
                         suspended: false // track suspension status
                     }));
                 setUsers(filteredUsers);
-                localStorage.setItem('users', JSON.stringify(filteredUsers)); // store initial users in localStorage, dont think we need
+                sessionStorage.setItem('users', JSON.stringify(filteredUsers)); // store initial users in sessionStorage, dont think we need
             } catch (error) {
                 console.error('Error fetching users:', error);
             }

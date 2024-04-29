@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React, { useState, useEffect } from 'react';
 import './PasswordChange.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
+
+
 
 function PasswordChange() {
     const navigate = useNavigate();
+    const { isLoggedIn, login, logout } = useAuth(); 
+    const [email, setEmail] = useState(sessionStorage.getItem('email') || '');
+    useEffect(() => {
+        if (!email) {
+            alert('No email found. Please ensure you have accessed this page through the correct procedure.');
+            navigate('/'); 
+        } else {
+            console.log(email);
+        }
+    }, [email, navigate]);
     const [customer,setCustomer] = useState(
         {
             userID: '',
@@ -29,7 +41,6 @@ function PasswordChange() {
         password: '',
         confirmPassword: '',
     });
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -58,61 +69,53 @@ function PasswordChange() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+    
         if (!validateForm()) {
             return;
-        } else {
-            setIsLoggedIn(false);
-            // navigate('/password-confirmation');
+        } 
         
         try {
-            const response = await axios.post('http://localhost:8080/getcustomerx', { email: localStorage.getItem('email') });
-            if (response.data['200']){
+            const response = await axios.post('http://localhost:8080/getcustomerx', { email: email });
+            if (response.data && response.data['200']) {
                 const responseData = response.data['200'].customer;
-                customer.userID = responseData.userID;
-                customer.userID= responseData.userID,
-                    customer.email= responseData.email,
-                    customer.password= responseData.password,
-                    customer.userRole= responseData.userRole,
-                    customer.firstName= responseData.firstName,
-                    customer.lastName= responseData.lastName,
-                    customer.phoneNumber= responseData.phoneNumber,
-                    customer.promotionsSubscribed= responseData.promotionsSubscribed,
-                    customer.verificationCode= responseData.verificationCode,
-                    customer.customerStatusID= responseData.customerStatusID,
-                    customer.street= responseData.street,
-                    customer.city= responseData.city,
-                    customer.state= responseData.state,
-                    customer.zipcode= responseData.zipcode
-
-                        // setCustomer(prevCustomer => ({
-                        //     ...prevCustomer,
-                        //     password: formData.oldPassword
-                        // }));
-
-                        if (responseData.password === formData.oldPassword)
-                        {
-                            customer.password = formData.password;
-                            try{
-                                const res = await axios.post('http://localhost:8080/updateCustomer',customer);
-                                console.log(res.data);
-                                alert('Password Changed! Please login');
-                                navigate('/login');
-                        }catch{
-                            console.log("error in updation");
-                        }
+                const updatedCustomer = { 
+                    ...customer,
+                    userID: responseData.userID,
+                    email: responseData.email,
+                    password: formData.password, 
+                    userRole: responseData.userRole,
+                    firstName: responseData.firstName,
+                    lastName: responseData.lastName,
+                    phoneNumber: responseData.phoneNumber,
+                    promotionsSubscribed: responseData.promotionsSubscribed,
+                    verificationCode: responseData.verificationCode,
+                    customerStatusID: responseData.customerStatusID,
+                    street: responseData.street,
+                    city: responseData.city,
+                    state: responseData.state,
+                    zipcode: responseData.zipcode
+                };
+    
+                if (responseData.password === formData.oldPassword) {
+                    try {
+                        const res = await axios.post('http://localhost:8080/updateCustomer', updatedCustomer);
+                        console.log(res.data);
+                        alert('Password Changed! Please login again.');
+                        logout();
+                        navigate('/login');
+                    } catch (updateError) {
+                        console.error("Error in updating password", updateError);
+                    }
+                } else {
+                    alert('Incorrect current password');
+                    navigate('/password-change');
+                }
             }
-            else{
-                alert('incorrect current password');
-                navigate('/password-change');
-            }
-            
-        } 
-    }catch (error) {
+        } catch (error) {
             console.error('Error fetching data:', error);
         }
-    }
     };
+    
 
     return (
         <div>

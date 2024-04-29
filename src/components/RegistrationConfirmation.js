@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Header from './Header'; 
 import './RegistrationForm.css'; 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext'; 
 
 const RegistrationConfirmation = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { isLoggedIn } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,9 +17,14 @@ const RegistrationConfirmation = () => {
         });
     }, []);
 
+    useEffect(() => {
+        if (isLoggedIn) { 
+          console.log("already logged in, navigating to home.");
+          navigate("/", { replace: true });
+        } 
+      }, [navigate, isLoggedIn]); 
+
     const handleClose = () => {
-        // Simulate logging in
-        setIsLoggedIn(true);
         navigate('/login');
     };
 
@@ -28,7 +34,6 @@ const RegistrationConfirmation = () => {
                 <div className="confirmation-card">
                     <h1>Registration Successful</h1>
                     <p>Your registration has been successfully completed.</p>
-                    {/* Add a Close button */}
                     <button onClick={handleClose} className="close-button">
                         Close
                     </button>
@@ -39,3 +44,4 @@ const RegistrationConfirmation = () => {
 }
 
 export default RegistrationConfirmation;
+

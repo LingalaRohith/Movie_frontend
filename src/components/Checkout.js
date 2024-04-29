@@ -4,12 +4,18 @@ import Header from './Header';
 import './Checkout.css';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 
-function Checkout({isLoggedIn}) {
+
+function Checkout() {
   const [email, setEmail] = useState('');
+  const { isLoggedIn } = useAuth(); 
+
   const [cardName, setCardName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
+  const navigate = useNavigate();
+
   const [cvc, setCVC] = useState('');
   const [expDate, setExpDate] = useState('');
   const [billingAddress, setBillingAddress] = useState('');
@@ -19,7 +25,7 @@ function Checkout({isLoggedIn}) {
   const [country, setCountry] = useState('');
   const [useSavedCard, setUseSavedCard] = useState(false); // Starts as false indicating new card details are shown by default
   const location = useLocation();
-  const { movie, selectedSeats, localTicketQuantities, showShowDates, showShowTimes, localSelectedSeats} = location.state || { localTicketQuantities: { adults: 0, children: 0, seniors: 0 }, selectedSeats: [], movie: {}, showShowDates: '', showShowTimes: '', localSelectedSeats: [] };
+  const { movie, selectedSeats, localTicketQuantities, showDates, showTimes, localSelectedSeats} = location.state || { localTicketQuantities: { adults: 0, children: 0, seniors: 0 }, selectedSeats: [], movie: {}, showDates: '', showTimes: '', localSelectedSeats: [] };
   const [card,setCard] = useState([]);
   // Example ticket prices
   const ticketPrices = { adults: 16, children: 12, seniors: 10 };
@@ -30,6 +36,16 @@ function Checkout({isLoggedIn}) {
   const taxes = subtotal * taxRate;
   const total = subtotal + bookingFee + taxes;
   const [selectedCardIndex, setSelectedCardIndex] = useState(null); 
+
+  useEffect(() => {
+    if (!isLoggedIn) { 
+      console.log("Not logged in, navigating to login.");
+      navigate("/login", { replace: true });
+    } else if (!location.state) {
+      console.log("Missing movie data, navigating home.");
+      navigate("/", { replace: true });
+    }
+  }, [navigate, movie, isLoggedIn]); 
 
 const handleCardClick = (index, cardDetail) => {
   if (selectedCardIndex === index) { 
@@ -71,8 +87,8 @@ const handleSubmit = (event) => {
       movie,
       localSelectedSeats,
       selectedSeats,
-      showShowDates,
-      showShowTimes,
+      showDates,
+      showTimes,
       total,
       cardData,
       formData
@@ -84,7 +100,7 @@ const handleSubmit = (event) => {
   useEffect(() => {
     const fetchCustomerDetails = async () => {
       try {
-        const email = localStorage.getItem('email');  // Assuming the email is stored in local storage
+        const email = sessionStorage.getItem('email');  
         if (!email) {
           console.error('No email found in storage.');
           return;
@@ -119,9 +135,6 @@ const handleSubmit = (event) => {
   const toggleUseSavedCard = () => {
     setUseSavedCard(!useSavedCard);
   };
-
-  const navigate = useNavigate();
-
 
 
   return (

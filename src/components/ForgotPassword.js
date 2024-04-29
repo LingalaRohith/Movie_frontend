@@ -21,6 +21,7 @@ function ForgotPassword() {
             window.alert("Enter a valid email");
         } else {
             setIsLoggedIn(false);
+            console.log(email);
             navigate('/email-sent', { state: { email } });
         }
     };

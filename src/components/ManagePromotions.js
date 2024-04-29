@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ManagePromotions.css';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom'; 
 
-function ManagePromotions({ isLoggedIn }) {
+
+
+function ManagePromotions() {
+    const { isLoggedIn } = useAuth(); 
+    const navigate = useNavigate(); 
+
 
     const [promotions, setPromotions] = useState([
         
@@ -15,6 +22,12 @@ function ManagePromotions({ isLoggedIn }) {
         "discountApplied": 0
         }
     ]);
+    useEffect(() => {
+        if (!isLoggedIn) { 
+          console.log("Not logged in, navigating to login.");
+          navigate("/login", { replace: true });
+        }
+      }, [navigate, isLoggedIn]); 
 
     useEffect(() => {
         async function fetchPromos() {

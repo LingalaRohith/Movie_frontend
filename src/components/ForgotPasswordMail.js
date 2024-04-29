@@ -1,36 +1,45 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React, { useState, useEffect } from 'react';
 import './PasswordChange.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function ForgotPasswordMail() {
     const navigate = useNavigate();
-    const [customer,setCustomer] = useState(
-        {
-            userID: '',
-            email: '',
-            password: '',
-            userRole: 1,
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            promotionsSubscribed: '',
-            verificationCode: '',
-            customerStatusID: 1,
-            street: '',
-            city: '',
-            state: '',
-            zipcode: ''
-        }
-    );
+    const [email, setEmail] = useState('');
+    const [customer, setCustomer] = useState({
+        userID: '',
+        email: '',
+        password: '',
+        userRole: 1,
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        promotionsSubscribed: '',
+        verificationCode: '',
+        customerStatusID: 1,
+        street: '',
+        city: '',
+        state: '',
+        zipcode: ''
+    });
     const [formData, setFormData] = useState({
-        oldPassword:'',
+        oldPassword: '',
         password: '',
         confirmPassword: '',
     });
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [formErrors, setFormErrors] = useState({});
+
+    useEffect(() => {
+        const storedEmail = localStorage.getItem('email');
+        if (storedEmail) {
+            setEmail(storedEmail);
+            console.log('Email retrieved:', storedEmail);
+        } else {
+            alert('No email found. Please ensure you have accessed this page through the correct procedure.');
+            navigate('/'); 
+        }
+    }, [navigate]);
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData({
@@ -38,7 +47,6 @@ function ForgotPasswordMail() {
             [name]: type === 'checkbox' ? checked : value,
         });
     };
-
 
     const validateForm = () => {
         const errors = {};
@@ -61,50 +69,41 @@ function ForgotPasswordMail() {
 
         if (!validateForm()) {
             return;
-        } else {
-            setIsLoggedIn(false);
-            // navigate('/password-confirmation');
-        
+        }
+
         try {
-            const response = await axios.post('http://localhost:8080/getcustomerx', { email: localStorage.getItem('email') });
-            if (response.data['200']){
+            const response = await axios.post('http://localhost:8080/getcustomerx', { email: email });
+            if (response.data && response.data['200']) {
                 const responseData = response.data['200'].customer;
-                customer.userID = responseData.userID;
-                customer.userID= responseData.userID,
-                    customer.email= responseData.email,
-                    customer.password= responseData.password,
-                    customer.userRole= responseData.userRole,
-                    customer.firstName= responseData.firstName,
-                    customer.lastName= responseData.lastName,
-                    customer.phoneNumber= responseData.phoneNumber,
-                    customer.promotionsSubscribed= responseData.promotionsSubscribed,
-                    customer.verificationCode= responseData.verificationCode,
-                    customer.customerStatusID= responseData.customerStatusID,
-                    customer.street= responseData.street,
-                    customer.city= responseData.city,
-                    customer.state= responseData.state,
-                    customer.zipcode= responseData.zipcode
+                setCustomer(current => ({
+                    ...current,
+                    userID: responseData.userID,
+                    email: responseData.email,
+                    password: formData.password, // initially keep old password
+                    userRole: responseData.userRole,
+                    firstName: responseData.firstName,
+                    lastName: responseData.lastName,
+                    phoneNumber: responseData.phoneNumber,
+                    promotionsSubscribed: responseData.promotionsSubscribed,
+                    verificationCode: responseData.verificationCode,
+                    customerStatusID: responseData.customerStatusID,
+                    street: responseData.street,
+                    city: responseData.city,
+                    state: responseData.state,
+                    zipcode: responseData.zipcode
+                }));
 
-                        // setCustomer(prevCustomer => ({
-                        //     ...prevCustomer,
-                        //     password: formData.oldPassword
-                        // }));
-
-                            customer.password = formData.password;
-                            try{
-                                const res = await axios.post('http://localhost:8080/updateCustomer',customer);
-                                console.log(res.data);
-                                alert('Password has been changed, Please login ')
-                                navigate('/login');
-                        }catch{
-                            console.log("error in updation");
-                        }
-            
-        } 
-    }catch (error) {
+                const updatedCustomer = {...customer, password: formData.password};
+                const res = await axios.post('http://localhost:8080/updateCustomer', updatedCustomer);
+                console.log(res.data);
+                alert('Password has been changed. Please login.');
+                navigate('/login');
+            } else {
+                alert('No customer found with that email.');
+            }
+        } catch (error) {
             console.error('Error fetching data:', error);
         }
-    }
     };
 
     return (
@@ -112,11 +111,11 @@ function ForgotPasswordMail() {
             <div className="password-change-container">
                 <h2>Forgot Password</h2>
                 <form className="password-change-form" onSubmit={handleSubmit}>
-                <div className="input-group">
-                         <input type="password" id="password" name="password" placeholder="New Password" required onChange={handleInputChange} />
+                    <div className="input-group">
+                        <input type="password" id="password" name="password" placeholder="New Password" required onChange={handleInputChange} />
                         {formErrors.password && <p className="error-message">{formErrors.password}</p>}
-                         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required onChange={handleInputChange} />
-                         {formErrors.confirmPassword && <p className="error-message">{formErrors.confirmPassword}</p>}
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required onChange={handleInputChange} />
+                        {formErrors.confirmPassword && <p className="error-message">{formErrors.confirmPassword}</p>}
                     </div>
                     <button type="submit">Confirm Password</button>
                 </form>
