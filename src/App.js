@@ -62,4 +62,17 @@ function App() {
             <Route path="/verify-account" element={<VerifyAccount />} /> 
             <Route path="/registration-confirmation" element={<RegistrationConfirmation />} /> 
             <Route path="/forgotPasswordMail" element={<ForgotPasswordMail />}/>
-            <Route path="/admin/manage-price" element={<TicketP
+            <Route path="/admin/manage-price" element={<TicketPrice />} />
+            <Route path="/user/:id" element={<UserProfile />} />
+            <Route path="/add-user" element={<AddUser />} />
+            <Route path="/add-admin" element={<AddAdmin />} />
+
+          </Routes>
+          </AuthProvider>
+        </Router>
+        </div>
+    );
+  }
+  
+  export default App;
+  

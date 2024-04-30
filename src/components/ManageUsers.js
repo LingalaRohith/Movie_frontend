@@ -129,4 +129,38 @@ function ManageUsers() {
                                     {user.suspended ? (
                                         <a href="#!" onClick={() => handleAction(user.userID, 'Activate')}>Activate</a>
                                     ) : (
- 
+                                        <a href="#!" onClick={() => handleAction(user.userID, 'Suspend')}>Suspend</a>
+                                    )}
+                                    <a href="#!" onClick={() => handleAction(user.userID, 'Delete')}>Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        
+            {/* Admins table */}
+            <h5>Admin List</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {admins.map((admin, index) => (
+                        <tr key={index}>
+                            <td>{`${admin.firstName} ${admin.lastName}`}</td>
+                            <td>{admin.email}</td>
+                            <td>Admin</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+export default ManageUsers;
