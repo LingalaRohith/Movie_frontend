@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './components/AuthContext';
 
@@ -26,6 +26,8 @@ import VerifyAccount from './components/VerifyAccount';
 import ForgotPasswordMail from './components/ForgotPasswordMail';
 import Header from './components/Header';
 import TicketPrice from "./components/TicketPrice";
+import UserProfile from './components/UserProfile';
+
 
 function App() {
     //sessionStorage.setItem('isLogin', false);
@@ -59,6 +61,8 @@ function App() {
             <Route path="/registration-confirmation" element={<RegistrationConfirmation />} /> 
             <Route path="/forgotPasswordMail" element={<ForgotPasswordMail />}/>
             <Route path="/admin/manage-price" element={<TicketPrice />} />
+            <Route path="/user/:id" element={<UserProfile />} />
+
           </Routes>
           </AuthProvider>
         </Router>
