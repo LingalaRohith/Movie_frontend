@@ -27,6 +27,8 @@ import ForgotPasswordMail from './components/ForgotPasswordMail';
 import Header from './components/Header';
 import TicketPrice from "./components/TicketPrice";
 import UserProfile from './components/UserProfile';
+import AddUser from './components/AddUser';
+import AddAdmin from './components/AddAdmin';
 
 
 function App() {
@@ -60,15 +62,4 @@ function App() {
             <Route path="/verify-account" element={<VerifyAccount />} /> 
             <Route path="/registration-confirmation" element={<RegistrationConfirmation />} /> 
             <Route path="/forgotPasswordMail" element={<ForgotPasswordMail />}/>
-            <Route path="/admin/manage-price" element={<TicketPrice />} />
-            <Route path="/user/:id" element={<UserProfile />} />
-
-          </Routes>
-          </AuthProvider>
-        </Router>
-        </div>
-    );
-  }
-  
-  export default App;
-  
+            <Route path="/admin/manage-price" element={<TicketP

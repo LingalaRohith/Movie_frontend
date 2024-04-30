@@ -7,7 +7,6 @@ import { useAuth } from './AuthContext';
 function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [admins, setAdmins] = useState([]);
-    const [newAdmin, setNewAdmin] = useState({ firstName: '', lastName: '', email: '', password: '' });
     const navigate = useNavigate();
     const { isLoggedIn } = useAuth();
 
@@ -37,6 +36,8 @@ function ManageUsers() {
         } catch (error) {
             console.error('Error fetching users:', error);
         }
+        fetchUsers();
+
     };
 
     const fetchAdmins = async () => {
@@ -48,18 +49,12 @@ function ManageUsers() {
         }
     };
 
-    const handleAdminRegistration = async (event) => {
-        event.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:8080/registerAdmin', newAdmin);
-            if (response.status === 200) {
-                alert('Admin registered successfully');
-                setAdmins([...admins, response.data]); // Assume the response includes the new admin's details
-                setNewAdmin({ firstName: '', lastName: '', email: '', password: '' });
-            }
-        } catch (error) {
-            console.error('Failed to register admin:', error);
-        }
+    const handleNavigateToAddUser = () => {
+        navigate("/add-user");
+    };
+
+    const handleNavigateToAddAdmin = () => {
+        navigate("/add-admin");
     };
     const handleAction = async (id, action) => {
         let endpoint = '';
@@ -95,13 +90,15 @@ function ManageUsers() {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setNewAdmin({ ...newAdmin, [name]: value });
+        //setNewAdmin({ ...newAdmin, [name]: value });
     };
 
     
     return (
         <div className="manage-users">
             <h5>Manage Users</h5>
+            <button onClick={handleNavigateToAddUser}>Add New User</button>
+            <button onClick={handleNavigateToAddAdmin}>Add New Admin</button>
             {/* User table */}
             <table>
                 <thead>
@@ -132,48 +129,4 @@ function ManageUsers() {
                                     {user.suspended ? (
                                         <a href="#!" onClick={() => handleAction(user.userID, 'Activate')}>Activate</a>
                                     ) : (
-                                        <a href="#!" onClick={() => handleAction(user.userID, 'Suspend')}>Suspend</a>
-                                    )}
-                                    <a href="#!" onClick={() => handleAction(user.userID, 'Delete')}>Delete</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            {/* Admin registration form */}
-            <div className="admin-registration">
-                <h5>Add New Admin</h5>
-                <form onSubmit={handleAdminRegistration}>
-                    <input type="text" name="firstName" placeholder="First Name" value={newAdmin.firstName} onChange={handleInputChange} required />
-                    <input type="text" name="lastName" placeholder="Last Name" value={newAdmin.lastName} onChange={handleInputChange} required />
-                    <input type="email" name="email" placeholder="Email" value={newAdmin.email} onChange={handleInputChange} required />
-                    <input type="password" name="password" placeholder="Password" value={newAdmin.password} onChange={handleInputChange} required />
-                    <button type="submit">Register Admin</button>
-                </form>
-            </div>
-            {/* Admins table */}
-            <h5>Admin List</h5>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {admins.map((admin, index) => (
-                        <tr key={index}>
-                            <td>{`${admin.firstName} ${admin.lastName}`}</td>
-                            <td>{admin.email}</td>
-                            <td>Admin</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-}
-export default ManageUsers;
+ 
