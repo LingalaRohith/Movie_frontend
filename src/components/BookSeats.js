@@ -4,18 +4,33 @@ import Seat from './Seat';
 import Header from './Header';
 import './BookSeats.css';
 import axios from 'axios';
-function BookSeats({ isLoggedIn }) {
+import { useAuth } from './AuthContext';
+
+
+function BookSeats() {
   const [showId, setShowId] = useState(null);
   const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [takenSeats, setTakenSeats] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth(); 
   const { movie, ticketQuantities, showDates, showTimes, existingSelections, selectedShowTime, selectedDate } = location.state || {};
   // Calculate the total tickets needed from the ticketQuantities passed in state
   const totalTicketsRequired = ticketQuantities ? Object.values(ticketQuantities).reduce((acc, value) => acc + value, 0) : 0;
 
   useEffect(() => {
+    if (!isLoggedIn) { 
+      console.log("Not logged in, navigating to login.");
+      navigate("/login", { replace: true });
+    } else if (!movie) {
+      console.log("Missing movie data, navigating home.");
+      navigate("/", { replace: true });
+    }
+  }, [navigate, movie, isLoggedIn]); 
+
+  useEffect(() => {
+    if (movie?.id) {
     const fetchShowID = async () => {
       try {
         const response = await axios.post('http://localhost:8080/getShow', {
@@ -29,6 +44,7 @@ function BookSeats({ isLoggedIn }) {
       }
     };
     fetchShowID();
+  }
   }, []);
   
   useEffect(() => {
@@ -60,6 +76,7 @@ function BookSeats({ isLoggedIn }) {
         alert(`Please select ${totalTicketsRequired} seats before continuing.`);
         return;
     }
+    console.log(showId);
     navigate('/ordersummary', { 
         state: { 
             movie, 
@@ -67,7 +84,9 @@ function BookSeats({ isLoggedIn }) {
             ticketQuantities, 
             showDates,
             showTimes,
-            totalTicketsRequired 
+            totalTicketsRequired,
+            showId,
+            ticketQuantities 
         } 
     });
 };

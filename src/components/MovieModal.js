@@ -57,7 +57,7 @@ const MovieModal = ({ movie, onClose, isLoggedIn }) => {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen>
         </iframe>
-        <div class="bttns">
+        <div className="bttns">
             <button onClick={onClose}>Close</button>
             {isLoggedIn && <button onClick={handleNavigation}>More Info</button>} 
         </div>

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
-import Hdr2 from './Header2';
 import './signup.css';
 import axios from 'axios';
+import { useAuth } from './AuthContext'; 
 
 const Signup = () => {
     const navigate = useNavigate();
+    const { login, isLoggedIn } = useAuth(); 
     const [formData, setFormData] = useState({
         customer: {
             email: '',
             password: '',
+            confirmPassword: '',  
             userRole: 1,
             firstName: '',
             lastName: '',
@@ -35,36 +36,37 @@ const Signup = () => {
             zipcode: ''
         }
     });
+    useEffect(() => {
+        if (isLoggedIn) { 
+          console.log("already logged in, navigating to home.");
+          navigate("/", { replace: true });
+        } 
+      }, [navigate, isLoggedIn]); 
     const [showPaymentFields, setShowPaymentFields] = useState(false);
     const [showAddressFields, setShowAddressFields] = useState(false);
     const [formErrors, setFormErrors] = useState({});
+    const [popupMessage, setPopupMessage] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-
-    // Destructure the formData object into customer and cardDetails
-    const { customer, cardDetails } = formData;
-
-    // Check if the input belongs to customer or cardDetails
-    if (customer.hasOwnProperty(name)) {
-        // Update the customer object
-        setFormData({
-            ...formData,
-            customer: {
-                ...customer,
-                [name]: type === 'checkbox' ? checked : value
-            }
-        });
-    } else if (cardDetails.hasOwnProperty(name)) {
-        // Update the cardDetails object
-        setFormData({
-            ...formData,
-            cardDetails: {
-                ...cardDetails,
-                [name]: value
-            }
-        });
-    }
+        const { customer, cardDetails } = formData;
+        if (customer.hasOwnProperty(name)) {
+            setFormData({
+                ...formData,
+                customer: {
+                    ...customer,
+                    [name]: type === 'checkbox' ? checked : value
+                }
+            });
+        } else if (cardDetails.hasOwnProperty(name)) {
+            setFormData({
+                ...formData,
+                cardDetails: {
+                    ...cardDetails,
+                    [name]: value
+                }
+            });
+        }
     };
 
     const validateForm = () => {
@@ -74,63 +76,41 @@ const Signup = () => {
         // if (!passwordRegex.test(formData.password)) {
         //     errors.password = 'Password must be at least 8 characters long, contain a number, a special character, and a capital letter.';
         // }
-
-        if (formData.password !== formData.confirmPassword) {
+        if (formData.customer.password !== formData.customer.confirmPassword) {
             errors.confirmPassword = 'Passwords must match.';
         }
-
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
+    
 
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-
-    //     if (!validateForm()) {
-    //         return;
-    //     }
-
-    //     // Here, include your registration logic
-    //     // If registration is successful, navigate to the confirmation page
-    //     navigate('/registration-confirmation', { state: { email: formData.email } });
-    // };
-    const [popupMessage, setPopupMessage] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const handleSubmit = async (event) => {
         event.preventDefault();
-             if (!validateForm()) {
+        if (!validateForm()) {
             return;
         }
-        try{
-          const response = await axios.post('http://localhost:8080/registerCustomer',formData);
-          console.log(response.data);
-          if (response.data['203']) {
-            // Incorrect password
-            setPopupMessage('Incorrect password. Please try again!');
-        } else if (response.data['204']) {
-            // User not found
-            setPopupMessage('User not found. Please sign up!');
-        } else if (response.data['200']) {
-            // Success
-            
-            setPopupMessage('Login successful!');
-            // navigate('/verify-account', { state : { customerDate:response.data['200'] }});
-            navigate('/verify-account', { state : { email : formData.customer.email, pwd : formData.customer.password}});
-        } else if (response.data['208']) {
-            // email already taken
-            setPopupMessage('Email already taken, please login');
-        }else {
-            // Other errors
+        try {
+            const response = await axios.post('http://localhost:8080/registerCustomer', formData);
+            console.log(response.data);
+            if (response.data['200']) {
+                navigate('/verify-account', {
+                    state: {
+                        email: formData.customer.email,
+                        pwd: formData.customer.password
+                    }
+                });
+            } else {
+                setPopupMessage(response.data.message || 'An error occurred. Please try again later!');
+            }
+        } catch (error) {
+            console.error('Error:', error);
             setPopupMessage('An error occurred. Please try again later!');
         }
-        }catch(error){
-          console.error('Error:', error);
-        }
-      }
+    };
+    
 
     return (
         <div>
-            {/* <Header isLoggedIn={isLoggedIn} setLoggedIn={setIsLoggedIn}/> */}
             <div className="signup-container">
                 <h3>Sign Up</h3>
                 <form className="signup-form" onSubmit={handleSubmit}>
@@ -144,9 +124,10 @@ const Signup = () => {
                         <input type="tel" id="phone" name="phoneNumber" placeholder="Phone Number *" value={formData.customer.phoneNumber} required onChange={handleInputChange} />
                     </div>
                     <div className="input-group">
-                         <input type="password" id="password" name="password" placeholder="Password" value={formData.customer.password} required onChange={handleInputChange} />
+                    <input type="password" id="password" name="password" placeholder="Password" value={formData.customer.password} required onChange={handleInputChange} />
                         {formErrors.password && <p className="error-message">{formErrors.password}</p>}
-                         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required onChange={handleInputChange} />
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required onChange={handleInputChange} />
+
                          {formErrors.confirmPassword && <p className="error-message">{formErrors.confirmPassword}</p>}
                     </div>
                     <div className="checkbox-group">
@@ -187,7 +168,6 @@ const Signup = () => {
                 </div>
                     <input type="submit" value="Create Account" className="submit-button" />
                 </form>
-                {/* Add a note at the bottom about mandatory fields */}
                 <p className="mandatory-note">* Indicates a required field</p>
                 <p className="link">Already have an account? <a href="/login">Log in here!</a></p>
                 {popupMessage && (

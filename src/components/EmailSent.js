@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import Header from './Header';
-import './RegistrationConfirmation';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -8,14 +6,19 @@ const EmailSent = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
     const location = useLocation(); 
-    const email = localStorage.getItem('email');// Retrieve email from location state
+    const email = location.state?.email;
+    useEffect(() => {
+        if (email) {
+            localStorage.setItem('email', email);
+        }
+    }, [email]);
 
     const handleClose = async () => {
         setIsLoggedIn(false);
-        const response = await axios.post('http://localhost:8080/forgetPasswordMail',{
-                email: email
-            });
-            console.log(response)
+        const response = await axios.post('http://localhost:8080/forgetPasswordMail', {
+            email: email
+        });
+        console.log(response);
         navigate('/');
     };
 
@@ -40,3 +43,4 @@ const EmailSent = () => {
 }
 
 export default EmailSent;
+

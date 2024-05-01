@@ -238,6 +238,27 @@ body, html {
 }
 
 
+.saved-card-section {
+  margin-top: 20px;
+}
 
+.saved-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
 
+.no-saved-cards {
+  color: #666;
+  font-style: italic;
+}
 
+.saved-card-display.selected {
+  border: 2px solid #4CAF50;
+  transform: scale(1.05); 
+  box-shadow: 0 0 15px #4CAF50; 
+}
+
+.saved-card-display:focus, .saved-card-display:hover {
+  border-color: #555; 
+}

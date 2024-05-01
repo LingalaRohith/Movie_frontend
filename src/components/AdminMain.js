@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import Header from './Header';
 import "./admin.css";
+import { useAuth } from './AuthContext';
 
-function AdminMain({isLoggedIn, setisLoggedIn}) {
+
+function AdminMain() {
+    const { isLoggedIn } = useAuth(); 
     const navigate = useNavigate(); 
-
+    
     const handleNavigation = (path) => {
         navigate(path);
     };
+
+    useEffect(() => {
+        if (!isLoggedIn) { 
+          console.log("Not logged in, navigating to login.");
+          navigate("/login", { replace: true });
+        }
+      }, [navigate, isLoggedIn]); 
+    
 
     return (
         <div>

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './components/AuthContext';
+
 import LandingPage from "./components/LandingPage";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -24,41 +26,49 @@ import VerifyAccount from './components/VerifyAccount';
 import ForgotPasswordMail from './components/ForgotPasswordMail';
 import Header from './components/Header';
 import TicketPrice from "./components/TicketPrice";
+import UserProfile from './components/UserProfile';
+import AddUser from './components/AddUser';
+import AddAdmin from './components/AddAdmin';
+
 
 function App() {
-    const [isLoggedIn, setLoggedIn] = useState(false);
-    //localStorage.setItem('isLogin', false);
+    //sessionStorage.setItem('isLogin', false);
   
     return (
       <div>
         <Router>
-        <Header isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn}/>
+        <AuthProvider>
+        <Header />
           <Routes>
-            <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="signup" element={<Signup setLoggedIn={setLoggedIn} />} />
-            <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
-            <Route path="moviespage" element={<MoviesPage isLoggedIn={isLoggedIn} />} />
-            <Route path="forgot-password" element={<ForgotPassword isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="signup" element={<Signup  />} />
+            <Route path="login" element={<Login  />} />
+            <Route path="moviespage" element={<MoviesPage />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="email-sent" element={<EmailSent />} />
             <Route path="password-change" element={<PasswordChange />} />
             <Route path="password-confirmation" element={<PasswordConfirmation />} />
-            <Route path="editprofile" element={<EditProfile isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn}/>} />
-            <Route path="admin" element={<AdminMain isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="movie-info" element={<MovieInformationPage isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="admin/manage-users" element={<ManageUsers isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="admin/manage-movies" element={<ManageMovies isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="admin/manage-promotions" element={<ManagePromotions isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="bookseats" element={<BookSeats isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="ordersummary" element={<OrderSummary isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="/order-confirmation" element={<OrderConfirmation isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="/checkout" element={<Checkout isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="/profilepage" element={<ProfilePage isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="/verify-account" element={<VerifyAccount isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} /> 
-            <Route path="/registration-confirmation" element={<RegistrationConfirmation isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn} />} /> 
-            <Route path="/forgotPasswordMail" element={<ForgotPasswordMail isLoggedIn={isLoggedIn} setLoggedIn={setLoggedIn}/>}/>
+            <Route path="editprofile" element={<EditProfile />} />
+            <Route path="admin" element={<AdminMain/>} />
+            <Route path="movie-info" element={<MovieInformationPage />} />
+            <Route path="admin/manage-users" element={<ManageUsers />} />
+            <Route path="admin/manage-movies" element={<ManageMovies />} />
+            <Route path="admin/manage-promotions" element={<ManagePromotions />} />
+            <Route path="bookseats" element={<BookSeats />} />
+            <Route path="ordersummary" element={<OrderSummary />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/profilepage" element={<ProfilePage />} />
+            <Route path="/verify-account" element={<VerifyAccount />} /> 
+            <Route path="/registration-confirmation" element={<RegistrationConfirmation />} /> 
+            <Route path="/forgotPasswordMail" element={<ForgotPasswordMail />}/>
             <Route path="/admin/manage-price" element={<TicketPrice />} />
+            <Route path="/user/:id" element={<UserProfile />} />
+            <Route path="/add-user" element={<AddUser />} />
+            <Route path="/add-admin" element={<AddAdmin />} />
 
           </Routes>
+          </AuthProvider>
         </Router>
         </div>
     );

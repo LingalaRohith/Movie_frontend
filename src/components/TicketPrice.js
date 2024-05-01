@@ -3,11 +3,11 @@ import './TicketPrice.css';
 
 const TicketPrice = () => {
     const [prices, setPrices] = useState({
-        child: parseFloat(localStorage.getItem('price_child')) || 10.00,
-        adult: parseFloat(localStorage.getItem('price_adult')) || 16.00,
-        senior: parseFloat(localStorage.getItem('price_senior')) || 12.00
+        child: parseFloat(sessionStorage.getItem('price_child')) || 10.00,
+        adult: parseFloat(sessionStorage.getItem('price_adult')) || 16.00,
+        senior: parseFloat(sessionStorage.getItem('price_senior')) || 12.00
     });
-    const [bookingFee, setBookingFee] = useState(parseFloat(localStorage.getItem('bookingFee')) || 2.00);
+    const [bookingFee, setBookingFee] = useState(parseFloat(sessionStorage.getItem('bookingFee')) || 2.00);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
@@ -34,10 +34,10 @@ const TicketPrice = () => {
             setError('Please enter valid positive values for all fields.');
             return;
         }
-        localStorage.setItem('price_child', prices.child);
-        localStorage.setItem('price_adult', prices.adult);
-        localStorage.setItem('price_senior', prices.senior);
-        localStorage.setItem('bookingFee', bookingFee);
+        sessionStorage.setItem('price_child', prices.child);
+        sessionStorage.setItem('price_adult', prices.adult);
+        sessionStorage.setItem('price_senior', prices.senior);
+        sessionStorage.setItem('bookingFee', bookingFee);
         setMessage('Prices updated successfully!');
         setError('');
     };
