@@ -21,9 +21,8 @@ function ManageMovies() {
         availability: '',
         bannerSrc: '',
         language: '',
-        showtimes: '',
         duration: '',
-        showdates: ''
+        schedules: [] 
     });
     const [showAddMovieForm, setShowAddMovieForm] = useState(false);
     const [editingSchedule, setEditingSchedule] = useState(false);
@@ -45,25 +44,30 @@ function ManageMovies() {
         setMovieForm(prevForm => ({ ...prevForm, [name]: value }));
     };
 
+    const handleAddSchedule = (time, date) => {
+        const newSchedule = { time, date };
+        setMovieForm(prev => ({
+            ...prev,
+            schedules: [...prev.schedules, newSchedule]
+        }));
+    };
+
+    const handleDeleteSchedule = (index) => {
+        setMovieForm(prev => ({
+            ...prev,
+            schedules: prev.schedules.filter((_, i) => i !== index)
+        }));
+    };
+
     const addMovie = () => {
         if (!movieForm.name) return;
-        const newMovie = {
-            ...movieForm,
-            id: movies.length + 1,
-            showtimes: editingSchedule ? movieForm.showtimes.split(',').map(time => time.trim()) : [],
-            showdates: editingSchedule ? movieForm.showdates.split(',').map(date => date.trim()) : []
-        };
-        setMovies([...movies, newMovie]);
+        setMovies([...movies, { ...movieForm, id: movies.length + 1 }]);
         resetForm();
     };
 
     const editMovie = (id) => {
         const movie = movies.find(m => m.id === id);
-        setMovieForm({
-            ...movie,
-            showtimes: '',
-            showdates: ''
-        });
+        setMovieForm(movie);
         setShowAddMovieForm(true);
         setEditingSchedule(false);
     };
@@ -71,27 +75,14 @@ function ManageMovies() {
     const scheduleMovie = (id) => {
         const movie = movies.find(m => m.id === id);
         setMovieForm({
-            ...movie,
-            showtimes: movie.showtimes.join(', '),
-            showdates: movie.showdates.join(', '),
-            duration: movie.duration
+            ...movie
         });
         setShowAddMovieForm(true);
         setEditingSchedule(true);
     };
 
     const saveEditedMovie = () => {
-        const updatedMovie = {
-            ...movieForm,
-            showtimes: editingSchedule ? [...movieForm.showtimes.split(',').map(time => time.trim())] : movieForm.showtimes,
-            showdates: editingSchedule ? [...movieForm.showdates.split(',').map(date => date.trim())] : movieForm.showdates
-        };
-
-        if (editingSchedule) {
-            updatedMovie.duration = movieForm.duration; 
-        }
-
-        setMovies(prevMovies => prevMovies.map(movie => movie.id === movieForm.id ? updatedMovie : movie));
+        setMovies(prevMovies => prevMovies.map(movie => movie.id === movieForm.id ? { ...movieForm } : movie));
         resetForm();
     };
 
@@ -117,12 +108,11 @@ function ManageMovies() {
             availability: '',
             bannerSrc: '',
             language: '',
-            showtimes: '',
             duration: '',
-            showdates: ''
+            schedules: []
         });
         setShowAddMovieForm(false);
-        setEditingSchedule(false); 
+        setEditingSchedule(false);
     };
 
     return (
@@ -135,28 +125,43 @@ function ManageMovies() {
                 <div className="add-movie-form">
                     {editingSchedule ? (
                         <>
-                            <input type="text" name="showtimes" placeholder="Add Show Times (comma-separated e.g., 16:00, 21:00)" value={movieForm.showtimes} onChange={handleInputChange} />
-                            <input type="text" name="showdates" placeholder="Add Show Dates (comma-separated e.g., 2023-06-01, 2023-06-02)" value={movieForm.showdates} onChange={handleInputChange} />
-                            <input type="text" name="duration" placeholder="Duration" value={movieForm.duration} onChange={handleInputChange} />
+                            {movieForm.schedules.map((schedule, index) => (
+                                <div key={index}>
+                                    <span>{schedule.date} at {schedule.time}</span>
+                                    <button onClick={() => handleDeleteSchedule(index)}>Delete</button>
+                                </div>
+                            ))}
+                            <input
+                                type="time"
+                                onChange={(e) => handleInputChange({ target: { name: 'time', value: e.target.value }})}
+                                placeholder="Select Show Time"
+                            />
+                            <input
+                                type="date"
+                                onChange={(e) => handleInputChange({ target: { name: 'date', value: e.target.value }})}
+                                placeholder="Select Show Date"
+                            />
+                            <button onClick={() => handleAddSchedule(movieForm.time, movieForm.date)}>Add Schedule</button>
                         </>
                     ) : (
                         <>
-                            <input type="text" name="name" placeholder="Name" value={movieForm.name} onChange={handleInputChange} />
-                            <input type="text" name="img" placeholder="Image URL" value={movieForm.img} onChange={handleInputChange} />
-                            <input type="text" name="cast" placeholder="Cast" value={movieForm.cast} onChange={handleInputChange} />
-                            <input type="text" name="category" placeholder="Category" value={movieForm.category} onChange={handleInputChange} />
-                            <input type="text" name="director" placeholder="Director" value={movieForm.director} onChange={handleInputChange} />
-                            <input type="text" name="producer" placeholder="Producer" value={movieForm.producer} onChange={handleInputChange} />
-                            <input type="date" name="releaseDate" placeholder="Release Date" value={movieForm.releaseDate} onChange={handleInputChange} />
-                            <textarea name="synopsis" placeholder="Synopsis" value={movieForm.synopsis} onChange={handleInputChange} />
-                            <textarea name="reviews" placeholder="Reviews" value={movieForm.reviews} onChange={handleInputChange} />
-                            <input type="text" name="trailerLink" placeholder="Trailer Link" value={movieForm.trailerLink} onChange={handleInputChange} />
-                            <input type="text" name="certificationCode" placeholder="Certification Code" value={movieForm.certificationCode} onChange={handleInputChange} />
-                            <input type="number" name="rating" placeholder="Rating" value={movieForm.rating} onChange={handleInputChange} />
-                            <input type="text" name="availability" placeholder="Availability" value={movieForm.availability} onChange={handleInputChange} />
-                            <input type="text" name="bannerSrc" placeholder="Banner Source" value={movieForm.bannerSrc} onChange={handleInputChange} />
-                            <input type="text" name="language" placeholder="Language" value={movieForm.language} onChange={handleInputChange} />
-                        </>
+                        <input type="text" name="name" placeholder="Name" value={movieForm.name} onChange={handleInputChange} />
+                        <input type="text" name="img" placeholder="Image URL" value={movieForm.img} onChange={handleInputChange} />
+                        <input type="text" name="cast" placeholder="Cast" value={movieForm.cast} onChange={handleInputChange} />
+                        <input type="text" name="category" placeholder="Category" value={movieForm.category} onChange={handleInputChange} />
+                        <input type="text" name="director" placeholder="Director" value={movieForm.director} onChange={handleInputChange} />
+                        <input type="text" name="producer" placeholder="Producer" value={movieForm.producer} onChange={handleInputChange} />
+                        <input type="date" name="releaseDate" placeholder="Release Date" value={movieForm.releaseDate} onChange={handleInputChange} />
+                        <textarea name="synopsis" placeholder="Synopsis" value={movieForm.synopsis} onChange={handleInputChange} />
+                        <textarea name="reviews" placeholder="Reviews" value={movieForm.reviews} onChange={handleInputChange} />
+                        <input type="text" name="trailerLink" placeholder="Trailer Link" value={movieForm.trailerLink} onChange={handleInputChange} />
+                        <input type="text" name="certificationCode" placeholder="Certification Code" value={movieForm.certificationCode} onChange={handleInputChange} />
+                        <input type="number" name="rating" placeholder="Rating" value={movieForm.rating} onChange={handleInputChange} />
+                        <input type="text" name="availability" placeholder="Availability" value={movieForm.availability} onChange={handleInputChange} />
+                        <input type="text" name="bannerSrc" placeholder="Banner Source" value={movieForm.bannerSrc} onChange={handleInputChange} />
+                        <input type="text" name="language" placeholder="Language" value={movieForm.language} onChange={handleInputChange} />
+                        <input type="text" name="duration" placeholder="Duration" value={movieForm.duration} onChange={handleInputChange} />
+                    </>
                     )}
                     <button onClick={movieForm.id ? saveEditedMovie : addMovie} className="btn btn-save">
                         {movieForm.id ? 'Save Changes' : 'Add Movie'}
@@ -183,5 +188,10 @@ function ManageMovies() {
 }
 
 export default ManageMovies;
+
+
+
+                            
+
 
 
