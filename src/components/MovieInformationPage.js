@@ -15,9 +15,9 @@ function MovieInformationPage() {
   const [showTimes, setShowTimes] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedShowTime, setSelectedShowTime] = useState('');
-  const [adults, setAdults] = useState(0);
-  const [children, setChildren] = useState(0);
-  const [seniors, setSeniors] = useState(0);
+  const [adult, setadult] = useState(0);
+  const [child, setchild] = useState(0);
+  const [senior, setsenior] = useState(0);
   const location = useLocation();
   const { movie } = location.state || {};
 
@@ -74,27 +74,27 @@ function MovieInformationPage() {
   }
 
   const increment = (type) => {
-    if (type === 'adults') {
-      setAdults(adults + 1);
-    } else if (type === 'children') {
-      setChildren(children + 1);
-    } else if ('seniors') {
-        setSeniors(seniors + 1);
+    if (type === 'adult') {
+      setadult(adult + 1);
+    } else if (type === 'child') {
+      setchild(child + 1);
+    } else if ('senior') {
+        setsenior(senior + 1);
     }
   };
 
   const decrement = (type) => {
-    if (type === 'adults') {
-        if (adults > 0) {
-          setAdults(adults - 1);
+    if (type === 'adult') {
+        if (adult > 0) {
+          setadult(adult - 1);
         }
-      } else if (type === 'children') {
-        if (children > 0) {
-          setChildren(children - 1);
+      } else if (type === 'child') {
+        if (child > 0) {
+          setchild(child - 1);
         }
-      } else if (type === 'seniors') {
-        if (seniors > 0) {
-          setSeniors(seniors - 1);
+      } else if (type === 'senior') {
+        if (senior > 0) {
+          setsenior(senior - 1);
         }
     }
   };
@@ -118,9 +118,9 @@ const renderTimesButton = () => {
       state: {
         movie,
         ticketQuantities: {
-          adults,
-          children,
-          seniors
+          adult,
+          child,
+          senior
         },
         showDates: selectedDate, 
         showTimes: selectedShowTime 
@@ -167,11 +167,11 @@ const renderTimesButton = () => {
             <div className="counters">
             <div className="counter-item">
               <p>Adult:</p>
-              <button onClick={() => decrement('adults')}>-</button>
-              <span>{adults}</span>
-              <button className="increment" onClick ={() => increment('adults')}>+</button>
+              <button onClick={() => decrement('adult')}>-</button>
+              <span>{adult}</span>
+              <button className="increment" onClick ={() => increment('adult')}>+</button>
 
-              {(adults > 0 || children > 0 || seniors > 0) && (
+              {(adult > 0 || child > 0 || senior > 0) && (
               <div className="dates-times-tickets">
                 <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
                 <option value="" disabled>Select Date</option>
@@ -184,9 +184,9 @@ const renderTimesButton = () => {
             </div>
             <div className="counter-item">
               <p>Child:</p>
-              <button onClick={() => decrement('children')}>-</button>
-              <span>{children}</span>
-              <button onClick={() => increment('children')}>+</button>
+              <button onClick={() => decrement('child')}>-</button>
+              <span>{child}</span>
+              <button onClick={() => increment('child')}>+</button>
               <div className="dates-times-tickets">
               {renderShowTimesDropdown()}
 
@@ -194,9 +194,9 @@ const renderTimesButton = () => {
             </div>
             <div className="counter-item">
               <p>Senior:</p>
-              <button onClick={() => decrement('seniors')}>-</button>
-              <span>{seniors}</span>
-              <button onClick={() => increment('seniors')}>+</button>
+              <button onClick={() => decrement('senior')}>-</button>
+              <span>{senior}</span>
+              <button onClick={() => increment('senior')}>+</button>
 
               {selectedShowTime && (
                 <div className="dates-times-tickets">

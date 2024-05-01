@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './OrderConfirmation.css';
 import { useAuth } from './AuthContext';
+import axios from 'axios';
 
 
 function OrderConfirmation() {
@@ -13,12 +14,70 @@ function OrderConfirmation() {
     localSelectedSeats,
     showDates,
     showTimes,
-    total
+    total, 
+    formData,
+    cardData,
+    showId,
+    promoCode,
+    localTicketQuantities,
+    ticketPrices
   } = location.state || {};
+  console.log(ticketPrices);
+  console.log(localTicketQuantities);
 
   const formattedTime = showTimes ? `${parseInt(showTimes)}:00` : 'Unknown time'; 
   const formattedDate = showDates ? new Date(showDates).toLocaleDateString() : 'Unknown date';
 
+  const createTickets = () => {
+    let tickets = [];
+    let seatIndex = 0;
+
+    Object.keys(localTicketQuantities).forEach(type => {
+      for (let i = 0; i < localTicketQuantities[type]; i++) {
+        if (seatIndex < localSelectedSeats.length) {
+          tickets.push({
+            bookingId: 0,
+            seatId: localSelectedSeats[seatIndex],
+            ticketType: type.charAt(0).toUpperCase() + type.slice(1), 
+            ticketPrice: ticketPrices[type]
+          });
+          seatIndex++;
+        }
+      }
+    });
+    return tickets;
+  };
+  const tickets = createTickets();
+  const todayDate = new Date().toISOString().split('T')[0];
+  const bookingData = {
+    booking: {
+      customerId : cardData.userID,
+      paymentId : cardData.cardID,
+      movieId: movie.id,
+      showId: showId, 
+      promoCode: promoCode, 
+      totalPrice: total,
+      bookingDate: todayDate,
+      bookingStatus: 1, 
+      paymentStatus: 1
+    },
+    tickets
+  }
+  const handleConfirmBooking = async () => {
+    if (isLoggedIn && bookingData && bookingData.tickets.length > 0) {
+      try {
+        console.log(JSON.stringify(bookingData, null, 2)); 
+        const response = await axios.post('http://localhost:8080/addBooking', bookingData);
+        console.log('Booking Confirmation Response:', response.data);
+        alert('Booking successful!'); // Optionally, navigate to a success page or display a success message
+      } catch (error) {
+        console.error('Error confirming booking:', error);
+        alert('Failed to confirm booking. Please try again.');
+      }
+    }
+  };
+  
+  
   useEffect(() => {
     if (!isLoggedIn) { 
       console.log("Not logged in, navigating to login.");
@@ -68,6 +127,7 @@ function OrderConfirmation() {
           <strong>Order Total:</strong> ${total.toFixed(2)}
         </div>
       </div>
+      <button onClick={handleConfirmBooking} className="confirm-booking-button">Click to Complete!</button>
       <p className="confirmation-footer">A confirmation of your order has been sent to your email.</p>
     </div>
   );

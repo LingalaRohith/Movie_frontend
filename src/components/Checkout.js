@@ -25,8 +25,8 @@ function Checkout() {
   const [country, setCountry] = useState('');
   const [useSavedCard, setUseSavedCard] = useState(false); // Starts as false indicating new card details are shown by default
   const location = useLocation();
-  const { movie, selectedSeats, localTicketQuantities, showDates, showTimes, localSelectedSeats, total } = location.state || {
-    localTicketQuantities: { adults: 0, children: 0, seniors: 0 },
+  const { promoCode, movie, selectedSeats, localTicketQuantities, showDates, showTimes, localSelectedSeats, total, formData, cardData, showId, ticketPrices } = location.state || {
+    localTicketQuantities: { adult: 0, child: 0, senior: 0 },
     selectedSeats: [],
     movie: {},
     showDates: '',
@@ -35,8 +35,6 @@ function Checkout() {
     total: 0  // Default value if total isn't passed
   };
     const [card,setCard] = useState([]);
-  // Example ticket prices
-  const ticketPrices = { adults: 16, children: 12, seniors: 10 };
   const bookingFee = 2;
   const taxRate = 0.07; // 7%
 
@@ -98,7 +96,11 @@ const handleSubmit = (event) => {
       showTimes,
       total,
       cardData,
-      formData
+      formData, 
+      showId,
+      promoCode,
+      localTicketQuantities,
+      ticketPrices
     }
   });
 };

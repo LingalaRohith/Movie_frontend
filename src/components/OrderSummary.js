@@ -19,7 +19,7 @@ const OrderSummary = () => {
   }, [navigate, isLoggedIn]); 
 
 
-  const { movie, selectedSeats, ticketQuantities, showDates, showTimes, selectedShowTime, selectedDate } = location.state || {
+  const { movie, selectedSeats, ticketQuantities, showDates, showTimes, selectedShowTime, selectedDate, showId } = location.state || {
     movie: {}, selectedSeats: [], ticketQuantities: {}, showDates: '', showTimes: ''
   };
   const [localTicketQuantities, setLocalTicketQuantities] = useState(ticketQuantities);
@@ -33,9 +33,9 @@ const OrderSummary = () => {
   }
 
   const ticketPrices = {
-    adults: parseFloat(sessionStorage.getItem('price_adult')) || 16,
-    children: parseFloat(sessionStorage.getItem('price_child')) || 10,
-    seniors: parseFloat(sessionStorage.getItem('price_senior')) || 12
+    adult: parseFloat(sessionStorage.getItem('price_adult')) || 16,
+    child: parseFloat(sessionStorage.getItem('price_child')) || 10,
+    senior: parseFloat(sessionStorage.getItem('price_senior')) || 12
 };
 const bookingFee = parseFloat(sessionStorage.getItem('bookingFee')) || 2;
 const taxRate = 0.07; // 7%%
@@ -64,7 +64,7 @@ const taxRate = 0.07; // 7%%
   const adjustSeatsForTicketChange = (newTicketQuantities) => {
     const newTotalTickets = Object.values(newTicketQuantities).reduce((acc, curr) => acc + curr, 0);
     let updatedSelectedSeats = [...localSelectedSeats];
-
+    
     if (newTotalTickets > updatedSelectedSeats.length) {
       navigate('/bookseats', {
         state: {
@@ -74,7 +74,9 @@ const taxRate = 0.07; // 7%%
           ticketQuantities: newTicketQuantities,
           showDates,
           showTimes,
-          additionalSeatsNeeded: newTotalTickets - updatedSelectedSeats.length
+          additionalSeatsNeeded: newTotalTickets - updatedSelectedSeats.length,
+          showId,
+          promoCode,
         }
       });
     } else if (newTotalTickets < updatedSelectedSeats.length) {
@@ -124,7 +126,11 @@ const taxRate = 0.07; // 7%%
           discount, 
           total, 
           showDates, 
-          showTimes 
+          showTimes,
+          showId,
+          ticketQuantities,
+          ticketPrices,
+          promoCode
         }
       });
     }

@@ -76,6 +76,7 @@ function BookSeats() {
         alert(`Please select ${totalTicketsRequired} seats before continuing.`);
         return;
     }
+    console.log(showId);
     navigate('/ordersummary', { 
         state: { 
             movie, 
@@ -83,7 +84,9 @@ function BookSeats() {
             ticketQuantities, 
             showDates,
             showTimes,
-            totalTicketsRequired 
+            totalTicketsRequired,
+            showId,
+            ticketQuantities 
         } 
     });
 };
