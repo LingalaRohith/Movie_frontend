@@ -9,6 +9,7 @@ function AddUser() {
         lastName: '',
         email: '',
         phoneNumber: '',
+        promotions: false,
         password: '',  
         address: {
             street: '',
