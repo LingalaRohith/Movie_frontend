@@ -25,7 +25,6 @@ function AdminMain() {
         <div>
             <div className='admin'>
                 <h1>Administrator Home Page</h1>
-                <h2>Options: </h2>
                 <button onClick={() => handleNavigation('/admin/manage-users')}>Manage Users</button>
                 <button onClick={() => handleNavigation('/admin/manage-movies')}>Manage Movies</button>
                 <button onClick={() => handleNavigation('/admin/manage-promotions')}>Manage Promotions</button>
