@@ -64,11 +64,11 @@ function LandingPage() {
   };
 
 
-  const filteredCurrentlyRunningMovies = currentlyRunningMovies.filter(movie =>
-    ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
-    movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
-    (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
-);
+//   const filteredCurrentlyRunningMovies = currentlyRunningMovies.filter(movie =>
+//     ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
+//     movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
+//     (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
+// );
 
 
 const handleDateChange = (e) => {
@@ -76,10 +76,21 @@ const handleDateChange = (e) => {
   console.log("Date set to:", e.target.value);
 };
 
+// const filteredUpcomingMovies = upcomingMovies.filter(movie =>
+//   ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
+//   movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
+//   (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
+// );
+const filteredCurrentlyRunningMovies = currentlyRunningMovies.filter(movie =>
+  ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
+  movie.showDates?.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
+  (selectedCategory === 'All' || (movie.movieCategory && movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase()))
+);
+
 const filteredUpcomingMovies = upcomingMovies.filter(movie =>
   ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
-  movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
-  (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
+  movie.showDates?.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
+  (selectedCategory === 'All' || (movie.movieCategory && movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase()))
 );
 
   return (

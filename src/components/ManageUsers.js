@@ -145,7 +145,7 @@ function ManageUsers() {
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        {/* <th>Name</th> */}
                         <th>Email</th>
                         <th>Role</th>
                     </tr>
@@ -153,7 +153,7 @@ function ManageUsers() {
                 <tbody>
                     {admins.map((admin, index) => (
                         <tr key={index}>
-                            <td>{`${admin.firstName} ${admin.lastName}`}</td>
+                            {/* <td>{`${admin.firstName} ${admin.lastName}`}</td> */}
                             <td>{admin.email}</td>
                             <td>Admin</td>
                         </tr>

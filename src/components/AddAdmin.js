@@ -8,7 +8,8 @@ function AddAdmin() {
         firstName: '',
         lastName: '',
         email: '',
-        password: ''
+        password: '',
+        userRole: 0
     });
     const navigate = useNavigate();
 

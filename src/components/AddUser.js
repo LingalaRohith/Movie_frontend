@@ -11,6 +11,7 @@ function AddUser() {
         phoneNumber: '',
         promotions: false,
         password: '',  
+        userRole: 1,
         address: {
             street: '',
             city: '',
@@ -64,7 +65,8 @@ function AddUser() {
             email: userData.email,
             phoneNumber: userData.phoneNumber,
             password: userData.password, 
-            address: userData.address
+            address: userData.address,
+            userRole: 1
         },
         cards: cards
     };

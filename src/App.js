@@ -29,6 +29,7 @@ import TicketPrice from "./components/TicketPrice";
 import UserProfile from './components/UserProfile';
 import AddUser from './components/AddUser';
 import AddAdmin from './components/AddAdmin';
+import Schedule from './components/Schedule';
 
 
 function App() {
@@ -66,7 +67,7 @@ function App() {
             <Route path="/user/:id" element={<UserProfile />} />
             <Route path="/add-user" element={<AddUser />} />
             <Route path="/add-admin" element={<AddAdmin />} />
-
+            <Route path="/schedule" element={<Schedule />} />
           </Routes>
           </AuthProvider>
         </Router>
