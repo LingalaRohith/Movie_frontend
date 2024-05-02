@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import Header from './Header.js';
 import axios from 'axios';
 import MovieModal from './MovieModal';
-import './landingpage.css'
-import './MovieInformationPage';
+import './landingpage.css';
 import { useLocation } from 'react-router-dom';
-import { useContext } from 'react';
-import { Context } from './Store';
-import { useAuth } from './AuthContext'; 
-
-
+import { useAuth } from './AuthContext';
 
 function LandingPage() {
   const [movies, setMovies] = useState([]);
   const [currentlyRunningMovies, setCurrentlyRunningMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchDate, setSearchDate] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { isLoggedIn } = useAuth();
-
-
-  const location = useLocation();
-   const mail = location.state?.email; 
-   const pwd = location.state?.password;
-   const name = location.state?.name;
 
   
 
@@ -41,6 +30,7 @@ function LandingPage() {
     }
     fetchMovies();
   }, []);
+
 
   const categorizeMovies = (movies) => {
     const currentDate = new Date();
@@ -73,16 +63,24 @@ function LandingPage() {
     // You can implement the navigation logic here
   };
 
+
   const filteredCurrentlyRunningMovies = currentlyRunningMovies.filter(movie =>
-    movie.movieTitle.toLowerCase().includes(searchTerm) &&
+    ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
+    movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
     (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
-  );
+);
 
-  const filteredUpcomingMovies = upcomingMovies.filter(movie =>
-    movie.movieTitle.toLowerCase().includes(searchTerm) &&
-    (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
-  );
 
+const handleDateChange = (e) => {
+  setSearchDate(e.target.value);
+  console.log("Date set to:", e.target.value);
+};
+
+const filteredUpcomingMovies = upcomingMovies.filter(movie =>
+  ((movie.movieTitle.toLowerCase().includes(searchTerm) &&
+  movie.showDates.some(date => new Date(date).toISOString().slice(0, 10) === searchDate)) || (movie.movieTitle.toLowerCase().includes(searchTerm) && searchDate==='')) &&
+  (selectedCategory === 'All' || movie.movieCategory.toLowerCase() === selectedCategory.toLowerCase())
+);
 
   return (
     <div className="App">
@@ -100,6 +98,12 @@ function LandingPage() {
             value={searchTerm}
             placeholder="Search by movie title"
           />
+          <input
+    type="date"
+    onChange={handleDateChange}
+    value={searchDate}
+    placeholder="Search by show date"
+/>
         </div>
         <h2>Currently Running</h2>
         <div className="list">
@@ -116,7 +120,6 @@ function LandingPage() {
             </div>
           ))}
         </div>
-
         <h2>Upcoming Movies</h2>
         <div className="list">
           {filteredUpcomingMovies.map(movie => (
@@ -133,7 +136,6 @@ function LandingPage() {
           ))}
         </div>
       </div>
-
       {isModalOpen && (
         <MovieModal movie={selectedMovie} onClose={handleCloseModal} onMoreInfo={handleMoreInfo} isLoggedIn={isLoggedIn}/>
       )}
@@ -142,3 +144,5 @@ function LandingPage() {
 }
 
 export default LandingPage;
+
+

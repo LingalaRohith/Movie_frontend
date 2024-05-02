@@ -22,6 +22,7 @@ function ManagePromotions() {
         "discountApplied": 0
         }
     ]);
+    
     useEffect(() => {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");

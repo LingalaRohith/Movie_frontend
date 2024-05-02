@@ -38,7 +38,8 @@ function ManageMovies() {
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
         }
-      }, [navigate, isLoggedIn]); 
+      }, [navigate, isLoggedIn]);
+
 
     useEffect(() => {
         async function fetchMovies() {
@@ -51,6 +52,7 @@ function ManageMovies() {
         }
         fetchMovies();
     }, []);
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
