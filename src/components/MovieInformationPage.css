@@ -1,5 +1,5 @@
 .modal-content {
-  background-color: #ffffff;
+  background-color: #e3e5ec;
   padding-bottom: 20px;
   padding-left: 20px;
   padding-right: 20px;
@@ -35,7 +35,7 @@
 
 .synopsis p {
   font-size: 17px;
-  color: #333; /* Ensure text color provides contrast against the background */
+  color: #333; 
 }
 
 .counters {
@@ -49,14 +49,14 @@
 }
 
 .counter-item p {
-  color: #333; /* Adding color to ensure readability */
+  color: #333; 
 }
 
 .counter-item button {
   background-color: #ffffff;
   border: 2px solid;
   border-radius: 5px;
-  color: #081752; /* Button text color for better visibility */
+  color: #081752; 
   padding: 5px 10px;
   cursor: pointer;
   margin: 0 5px;
@@ -64,7 +64,7 @@
 
 .counter-item span {
   margin: 0 10px;
-  color: #333; /* Color for numbers */
+  color: #333; 
 }
 
 .dates-times-tickets select, .dates-times-tickets button {
@@ -90,7 +90,6 @@
   font-weight: normal;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .video-and-synopsis {
     flex-direction: column;

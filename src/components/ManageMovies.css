@@ -74,7 +74,13 @@ h5 {
     border: none;
     border-radius: 5px;
 }
+.btn-schedule {
+    background-color: rgb(174, 97, 165);
+    color: white;
+    border: none;
+    border-radius: 5px;
 
+}
 
 
 
