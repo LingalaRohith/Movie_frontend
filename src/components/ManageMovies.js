@@ -28,7 +28,7 @@ function ManageMovies() {
         // showtimes: []
     });
     const [showAddMovieForm, setShowAddMovieForm] = useState(false);
-    const { isLoggedIn, isAdminUser } = useAuth();
+    const { isLoggedIn, isAdmin } = useAuth();
     const validateForm = () => {
         const requiredFields = [
             'movieTitle', 'posterSrc', 'movieCast', 'movieCategory', 
@@ -49,10 +49,10 @@ function ManageMovies() {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
-        } else if (!isAdminUser) {
+        } else if (!isAdmin) {
             navigate("/", { replace: true });
         }
-      }, [navigate, isLoggedIn, isAdminUser]); 
+      }, [navigate, isLoggedIn, isAdmin]); 
 
     useEffect(() => {
         async function fetchMovies() {
