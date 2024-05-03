@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './TicketPrice.css';  
+import { useAuth } from './AuthContext'; 
+import { useNavigate } from 'react-router-dom';
+
+
 
 const TicketPrice = () => {
     const [prices, setPrices] = useState({
@@ -10,6 +14,17 @@ const TicketPrice = () => {
     const [bookingFee, setBookingFee] = useState(parseFloat(sessionStorage.getItem('bookingFee')) || 2.00);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const { isLoggedIn, isAdminUser } = useAuth();
+
+    useEffect(() => {
+        if (!isLoggedIn) { 
+          console.log("Not logged in, navigating to login.");
+          navigate("/login", { replace: true });
+        } else if (!isAdminUser) {
+            navigate("/", { replace: true });
+        }
+      }, [navigate, isLoggedIn, isAdminUser]); 
 
     const handlePriceChange = (e) => {
         if (e.target.value < 0) {

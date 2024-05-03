@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 function ManagePromotions() {
-    const { isLoggedIn } = useAuth(); 
+    const { isLoggedIn, isAdminUser } = useAuth(); 
     const navigate = useNavigate(); 
 
 
@@ -27,8 +27,10 @@ function ManagePromotions() {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
+        } else if (!isAdminUser) {
+            navigate("/", { replace: true });
         }
-      }, [navigate, isLoggedIn]); 
+      }, [navigate, isLoggedIn, isAdminUser]); 
 
     useEffect(() => {
         async function fetchPromos() {

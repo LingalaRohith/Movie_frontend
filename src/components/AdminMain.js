@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext';
 
 
 function AdminMain() {
-    const { isLoggedIn } = useAuth(); 
+    const { isLoggedIn, isAdminUser } = useAuth(); 
     const navigate = useNavigate(); 
     
     const handleNavigation = (path) => {
@@ -17,8 +17,10 @@ function AdminMain() {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
+        } else if (!isAdminUser) {
+            navigate("/", { replace: true });
         }
-      }, [navigate, isLoggedIn]); 
+      }, [navigate, isLoggedIn, isAdminUser]); 
     
 
     return (
