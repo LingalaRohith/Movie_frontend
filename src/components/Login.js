@@ -34,8 +34,29 @@ function Login() {
       setFormData({ ...formData, [name]: value });
   };
 
+  const checkCustomerStatus = async (email) => {
+    try {
+      const response = await axios.post('http://localhost:8080/getcustomerx', { email });
+      if (response.data['200'] && response.data['200'].customer.customerStatusID === "InActive") {
+        return "inactive"; 
+      }
+      return "active"; 
+    } catch (error) {
+      console.error('Error fetching customer status:', error);
+      return "error"; 
+    }
+  };
   const handleSubmit = async (event) => {
       event.preventDefault();
+      const status = await checkCustomerStatus(formData.email);
+    if (status === "inactive") {
+      setPopupMessage('Your account is inactive. You cannot log in.');
+      return;
+    }
+    if (status === "error") {
+      setPopupMessage('An error occurred while checking your account status.');
+      return;
+    }
       try {
         const res = await axios.post('http://localhost:8080/getAdmin', formData)
         if (res.status === 200){
