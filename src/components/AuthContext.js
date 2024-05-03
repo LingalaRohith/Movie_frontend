@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
   sessionStorage.removeItem('email');
   sessionStorage.removeItem('userData');
   setLoggedIn(false);
+  navigate('/');
 };
 
 

@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function OrderHistroy() {
   const [bookings, setBookings] = useState([]);
   const userData = JSON.parse(sessionStorage.getItem('userData'));
   const [custId, setCustId] = useState(userData ? userData.customer.customerID : 0); 
+  const { isLoggedIn } = useAuth(); 
+  const navigate = useNavigate();
 
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+        console.log("Not logged in, navigating to login.");
+        navigate("/login", { replace: true });
+    }
+  }, [navigate, isLoggedIn]);
+  
   useEffect(() => {
     if (userData) {
       setCustId(userData.customer.userID);
@@ -26,6 +40,7 @@ function OrderHistroy() {
 
     fetchData();
   }, [custId]);
+  
 
   return (
     <div>

@@ -19,7 +19,7 @@ const EmailSent = () => {
             email: email
         });
         console.log(response);
-        navigate('/');
+        navigate('/login');
     };
 
     return (

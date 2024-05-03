@@ -57,6 +57,8 @@ const Hdr = () => {
               <div className={showMenu ? "dropdown-menu show" : "dropdown-menu"}>
                 <div className="dropdown-item-greeting">Hi {userFirstName}!</div>
                 <Link to="/order-history" className="dropdown-item">Order History</Link>
+                <Link to="/editprofile" className="dropdown-item">Edit Profile</Link>
+                <Link to="/password-change" className="dropdown-item">Reset Password</Link>
                 <div className="dropdown-item" onClick={handleLogout}>Sign out</div>
               </div>           
             </div>
