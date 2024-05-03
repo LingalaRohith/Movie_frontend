@@ -33,7 +33,9 @@ const Schedule = () => {
   };
 
   const handleSubmit = async (event) => {
+    console.log(JSON.stringify(formData, null, 2));
     event.preventDefault();
+
     try {
       const response = await axios.post('http://localhost:8080/addShow', formData);
       console.log('Data submitted successfully:', response.data);
