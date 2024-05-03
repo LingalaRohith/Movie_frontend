@@ -15,16 +15,16 @@ const TicketPrice = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { isLoggedIn, isAdminUser } = useAuth();
+    const { isLoggedIn, isAdmin } = useAuth();
 
     useEffect(() => {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
-        } else if (!isAdminUser) {
+        } else if (!isAdmin) {
             navigate("/", { replace: true });
         }
-      }, [navigate, isLoggedIn, isAdminUser]); 
+      }, [navigate, isLoggedIn, isAdmin]); 
 
     const handlePriceChange = (e) => {
         if (e.target.value < 0) {

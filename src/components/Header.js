@@ -7,7 +7,7 @@ import './Signup.js';
 import axios from 'axios';
 
 const Hdr = () => {
-  const { isLoggedIn, logout } = useAuth(); 
+  const { isLoggedIn, logout, isAdmin } = useAuth(); 
   const [showMenu, setShowMenu] = useState(false);
   const [userFirstName, setUserFirstName] = useState('');
 
@@ -49,7 +49,7 @@ const Hdr = () => {
       <div className="buttons">
         {isLoggedIn ? (
           <>
-            <Link to="/">
+            <Link to={isAdmin ? "/admin" : "/"}>
               <button>Home</button>
             </Link>
             <div className="user-info" onClick={toggleMenu}>

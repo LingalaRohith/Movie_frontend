@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     let initialLoad = true;
     const handleLoginChange = () => {
       console.log("isLoggedIn:", isLoggedIn);
+      console.log("isAdmin:", isAdmin);
       sessionStorage.setItem('isLogin', isLoggedIn);
       if (!isLoggedIn && !initialLoad) {
         console.log("Navigating to /login...");
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     setLoggedIn(true);
     const isAdminUser = adminEmails.includes(email);
     setAdmin(isAdminUser);
-    console.log('admin'+ isAdminUser);
+    console.log('admin'+ isAdmin);
   };
 
  const logout = () => {

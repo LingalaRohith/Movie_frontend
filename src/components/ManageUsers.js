@@ -8,16 +8,16 @@ function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [admins, setAdmins] = useState([]);
     const navigate = useNavigate();
-    const { isLoggedIn, isAdminUser } = useAuth();
+    const { isLoggedIn, isAdmin } = useAuth();
 
     useEffect(() => {
         if (!isLoggedIn) { 
           console.log("Not logged in, navigating to login.");
           navigate("/login", { replace: true });
-        } else if (!isAdminUser) {
+        } else if (!isAdmin) {
             navigate("/", { replace: true });
         }
-      }, [navigate, isLoggedIn, isAdminUser]); 
+      }, [navigate, isLoggedIn, isAdmin]); 
 
     useEffect(() => {
         fetchUsers();
