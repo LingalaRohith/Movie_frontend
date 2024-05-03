@@ -37,6 +37,13 @@ function Login() {
   const handleSubmit = async (event) => {
       event.preventDefault();
       try {
+        const res = await axios.post('http://localhost:8080/getAdmin', formData)
+        if (res.status === 200){
+            login(formData.email,res.data);
+            navigate('/admin', { replace: true });
+        }else if(res.status === 203){
+            alert("Invalid Credientails")
+        }else if(res.status === 204){
           const response = await axios.post('http://localhost:8080/getCustomer', formData);
           if (response.data['203']) {
               setPopupMessage('Incorrect password. Please try again!');
@@ -47,10 +54,12 @@ function Login() {
               login(formData.email, userData); // Use login from context
               if (userData.customer.userRole === 'Customer') {
                   navigate('/', { replace: true });
-              } else if (userData.customer.userRole === 'Admin') {
-                  navigate('/admin', { replace: true });
-              }
-          } else {
+              } 
+            //   else if (userData.customer.userRole === 'Admin') {
+            //       navigate('/admin', { replace: true });
+            //   }
+          } 
+        }else {
               setPopupMessage('An error occurred. Please try again later!');
           }
       } catch (error) {

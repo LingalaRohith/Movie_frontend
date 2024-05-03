@@ -22,8 +22,6 @@ function OrderConfirmation() {
     localTicketQuantities,
     ticketPrices
   } = location.state || {};
-  console.log(ticketPrices);
-  console.log(localTicketQuantities);
 
   const formattedTime = showTimes ? `${parseInt(showTimes)}:00` : 'Unknown time'; 
   const formattedDate = showDates ? new Date(showDates).toLocaleDateString() : 'Unknown date';
@@ -52,7 +50,7 @@ function OrderConfirmation() {
   const bookingData = {
     booking: {
       customerId : cardData.userID,
-      paymentId : cardData.cardID,
+      paymentId: cardData && cardData.cardID ? cardData.cardID : 0,
       movieId: movie.id,
       showId: showId, 
       promoCode: promoCode, 
@@ -64,18 +62,54 @@ function OrderConfirmation() {
     tickets
   }
   const handleConfirmBooking = async () => {
-    if (isLoggedIn && bookingData && bookingData.tickets.length > 0) {
+    if (!isLoggedIn) { 
+      console.log("Not logged in, navigating to login.");
+      navigate("/login", { replace: true });
+      return;
+    }
+  
+    let userID = cardData && cardData.userID ? cardData.userID : null;
+    
+    if (!userID) {
       try {
-        console.log(JSON.stringify(bookingData, null, 2)); 
-        const response = await axios.post('http://localhost:8080/addBooking', bookingData);
-        console.log('Booking Confirmation Response:', response.data);
-        alert('Booking successful!'); // Optionally, navigate to a success page or display a success message
+        const email = sessionStorage.getItem('email'); 
+        console.log(email);
+        const response = await axios.post('http://localhost:8080/getcustomerx', { email });
+        userID = response.data['200'].customer.userID;
       } catch (error) {
-        console.error('Error confirming booking:', error);
-        alert('Failed to confirm booking. Please try again.');
+        console.error('Error fetching user data:', error);
+        alert('Failed to fetch user data. Please try again.');
+        return;
       }
     }
+  
+    const bookingData = {
+      booking: {
+        customerId: userID,
+        paymentId: cardData && cardData.cardID ? cardData.cardID : 1,
+        movieId: movie.id,
+        showId: showId,
+        promoCode: promoCode,
+        totalPrice: total,
+        bookingDate: new Date().toISOString().split('T')[0],
+        bookingStatus: 1,
+        paymentStatus: 1
+      },
+      tickets: createTickets()
+    };
+  
+    try {
+      console.log(JSON.stringify(bookingData, null, 2)); 
+      const response = await axios.post('http://localhost:8080/addBooking', bookingData);
+      console.log('Booking Confirmation Response:', response.data);
+      alert('Booking successful!'); 
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      alert('Failed to confirm booking. Please try again.');
+    }
   };
+  
+  
   
   
   useEffect(() => {
@@ -127,7 +161,7 @@ function OrderConfirmation() {
           <strong>Order Total:</strong> ${total.toFixed(2)}
         </div>
       </div>
-      <button onClick={handleConfirmBooking} className="confirm-booking-button">Click to Complete!</button>
+      <button onClick={handleConfirmBooking} className="confirm-booking-button">Click to Complete!!</button>
       <p className="confirmation-footer">A confirmation of your order has been sent to your email.</p>
     </div>
   );
