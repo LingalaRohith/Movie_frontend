@@ -35,16 +35,15 @@ button {
   padding: 10px 20px; /* Increased button padding */
   margin-left: 10px; /* Increased button margin */
   font-weight: 700;
-  color: rgb(255, 255, 255); /* Updated font color */
+  color: rgb(7, 7, 7); /* Updated font color */
   font-size: 16px; /* Updated font size */
   border-radius: 20px;
   transition: background-color 0.3s;
-  background-color: transparent; /* Removed default button background */
   border: 2px solid #fff; /* Added border */
 }
 
 button:hover {
-  background-color: #081752;
+  background-color: #a4aed6;
   color: #081752; /* Updated font color on hover */
 }
 
