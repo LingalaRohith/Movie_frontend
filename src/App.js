@@ -30,6 +30,7 @@ import UserProfile from './components/UserProfile';
 import AddUser from './components/AddUser';
 import AddAdmin from './components/AddAdmin';
 import Schedule from './components/Schedule';
+import OrderHistroy from './components/OrderHistory';
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
             <Route path="/add-user" element={<AddUser />} />
             <Route path="/add-admin" element={<AddAdmin />} />
             <Route path="/schedule" element={<Schedule />} />
+            <Route path="/order-history" element={<OrderHistroy/>}/>
           </Routes>
           </AuthProvider>
         </Router>

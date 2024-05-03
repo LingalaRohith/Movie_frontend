@@ -66,7 +66,8 @@ function ManageMovies() {
 
     const editMovie = (id) => {
         const movie = movies.find(m => m.id === id);
-        setMovieForm({ ...movie });
+        setMovieForm({ ...movie,
+                        id : id });
         setShowAddMovieForm(true);
     };
 
@@ -85,14 +86,14 @@ function ManageMovies() {
 
     const deleteMovie = async (id) => {
         try{
-            const response = await axios.post("http://localhost:8080/deletemovie",{
+            const response = await axios.post("http://localhost:8080/api/v1/movie/deleteM",{
                 "id" : id
             })
             response?alert("deleted successfully"):alert("Something went wrong");
         }catch{
             alert("Something went wrong!");
         }
-        // setMovies(movies.filter(movie => movie.id !== id));
+        setMovies(movies.filter(movie => movie.id !== id));
     };
     const scheduleMovie = (id) => {
         navigate('/schedule',{state : {id : id}});
