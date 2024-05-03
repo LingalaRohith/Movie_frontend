@@ -50,9 +50,13 @@ const TicketPrice = () => {
             return;
         }
         sessionStorage.setItem('price_child', prices.child);
+        localStorage.setItem('price_child', prices.child);
         sessionStorage.setItem('price_adult', prices.adult);
+        localStorage.setItem('price_adult', prices.adult);
         sessionStorage.setItem('price_senior', prices.senior);
+        localStorage.setItem('price_senior', prices.senior);
         sessionStorage.setItem('bookingFee', bookingFee);
+        localStorage.setItem('bookingFee', bookingFee);
         setMessage('Prices updated successfully!');
         setError('');
     };

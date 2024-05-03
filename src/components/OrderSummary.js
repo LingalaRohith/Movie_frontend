@@ -33,11 +33,15 @@ const OrderSummary = () => {
   }
 
   const ticketPrices = {
-    adult: parseFloat(sessionStorage.getItem('price_adult')) || 16,
-    child: parseFloat(sessionStorage.getItem('price_child')) || 10,
-    senior: parseFloat(sessionStorage.getItem('price_senior')) || 12
+    // adult: parseFloat(sessionStorage.getItem('price_adult')) || 16,
+    // child: parseFloat(sessionStorage.getItem('price_child')) || 10,
+    // senior: parseFloat(sessionStorage.getItem('price_senior')) || 12
+    adult: parseFloat(localStorage.getItem('price_adult')),
+    child: parseFloat(localStorage.getItem('price_child')),
+    senior: parseFloat(localStorage.getItem('price_senior'))
 };
-const bookingFee = parseFloat(sessionStorage.getItem('bookingFee')) || 2;
+// const bookingFee = parseFloat(sessionStorage.getItem('bookingFee')) || 2;
+const bookingFee = parseFloat(localStorage.getItem('bookingFee')) || 2;
 const taxRate = 0.07; // 7%%
 
   const updateTicketQuantity = (type, increment) => {
