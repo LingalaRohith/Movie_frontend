@@ -29,6 +29,21 @@ function ManageMovies() {
     });
     const [showAddMovieForm, setShowAddMovieForm] = useState(false);
     const { isLoggedIn, isAdminUser } = useAuth();
+    const validateForm = () => {
+        const requiredFields = [
+            'movieTitle', 'posterSrc', 'movieCast', 'movieCategory', 
+            'movieDirector', 'movieProducer', 'releaseDate', 'synopsis', 
+            'reviews', 'trailerLink', 'movieCertificationCode', 'rating', 
+            'movieAvailability', 'bannerSrc', 'language'
+        ];
+        for (let field of requiredFields) {
+            if (!movieForm[field] || movieForm[field].trim() === '') {
+                alert(`Please enter all fields.`);
+                return false;
+            }
+        }
+        return true;
+    };
 
     useEffect(() => {
         if (!isLoggedIn) { 
@@ -59,6 +74,7 @@ function ManageMovies() {
 
     const addMovie = async () => {
         if (!movieForm.movieTitle) return;
+        if (validateForm()) {
         const newMovie = {
             ...movieForm,
             id: movies.length + 1
@@ -74,6 +90,7 @@ function ManageMovies() {
         }
 
         resetForm();
+    }
     };
 
     const editMovie = (id) => {
