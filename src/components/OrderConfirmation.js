@@ -10,19 +10,19 @@ function OrderConfirmation() {
   const navigate = useNavigate(); 
   const { isLoggedIn } = useAuth(); 
   const {
-    movie,
-    localSelectedSeats,
+    movie = {},
+    localSelectedSeats = [],
     showDates,
     showTimes,
-    total, 
+    total = 0,
     formData,
-    cardData,
+    cardData, 
     showId,
+    userID,
     promoCode,
-    localTicketQuantities,
-    ticketPrices
+    localTicketQuantities = {},
+    ticketPrices = {}
   } = location.state || {};
-
   const formattedTime = showTimes ? `${parseInt(showTimes)}:00` : 'Unknown time'; 
   const formattedDate = showDates ? new Date(showDates).toLocaleDateString() : 'Unknown date';
 
@@ -46,16 +46,22 @@ function OrderConfirmation() {
     return tickets;
   };
   const tickets = createTickets();
-  const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = new Date();
+  const formattedTodayDate = todayDate.getFullYear() + '-' + 
+    ('0' + (todayDate.getMonth() + 1)).slice(-2) + '-' + 
+    ('0' + todayDate.getDate()).slice(-2);
+
+
+  
   const bookingData = {
     booking: {
-      customerId : cardData.userID,
+      customerId : userID,
       paymentId: cardData && cardData.cardID ? cardData.cardID : 0,
       movieId: movie.id,
       showId: showId, 
       promoCode: promoCode, 
       totalPrice: total,
-      bookingDate: todayDate,
+      bookingDate: formattedTodayDate,
       bookingStatus: 1, 
       paymentStatus: 1
     },
@@ -66,21 +72,6 @@ function OrderConfirmation() {
       console.log("Not logged in, navigating to login.");
       navigate("/login", { replace: true });
       return;
-    }
-  
-    let userID = cardData && cardData.userID ? cardData.userID : null;
-    
-    if (!userID) {
-      try {
-        const email = sessionStorage.getItem('email'); 
-        console.log(email);
-        const response = await axios.post('http://localhost:8080/getcustomerx', { email });
-        userID = response.data['200'].customer.userID;
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        alert('Failed to fetch user data. Please try again.');
-        return;
-      }
     }
   
     const bookingData = {
@@ -108,8 +99,6 @@ function OrderConfirmation() {
       alert('Failed to confirm booking. Please try again.');
     }
   };
-  
-  
   
   
   useEffect(() => {
